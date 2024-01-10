@@ -2,3 +2,24 @@
 body {
   font-family: sans-serif;
 }
+
+.explode-button {
+  text-align: center;
+  user-select: none;
+  background: rgb(238, 164, 164);
+  width: 20px;
+  height: 20px;
+}
+.unexplode-button {
+  text-align: center;
+  user-select: none;
+  background: rgb(174, 174, 237);
+  width: 20px;
+  height: 20px;
+}
+.creation-button {
+  text-align: center;
+  user-select: none;
+  background: rgb(244, 233, 40);
+  height: 20px;
+}

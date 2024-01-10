@@ -1,0 +1,34 @@
+#wallet {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+}
+
+
+
+.graphic-pocket {
+    min-width: 60px;
+    min-height: 60px;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+.numeric-pocket {
+    min-width: 60px;
+    min-height: 20px;
+    text-align: center;
+}
+
+.exploding-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    min-width: 20px;
+}
+
+.creation-controls {
+    display: flex;
+    justify-content: space-evenly;
+    min-height: 20px;
+}
