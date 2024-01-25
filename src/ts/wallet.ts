@@ -18,6 +18,17 @@ class wallet implements wallet {
   }
   setPocket(index: number, x: number) {
     this.pockets[index] = x;
+    this.fillPocketsUI();
+  }
+
+  addCoin(index: number) {
+    this.pockets[index] += 1;
+    this.fillPocketsUI();
+  }
+
+  removeCoin(index: number) {
+    this.pockets[index] -= 1;
+    this.fillPocketsUI();
   }
 
   // explode: join points on index index into next pocket
@@ -110,16 +121,28 @@ class wallet implements wallet {
 
     creationControls
       .append("div")
-      .attr("class", "creation-button")
+      .attr("class", "substract-button")
+      .text("-")
+      .on("click", (ev, d) => {
+        const i = (d as walletItemsData).pocketIndex;
+        this.removeCoin(i);
+      });
+
+    creationControls
+      .append("div")
+      .attr("class", "coin-value")
       .text((d) => {
         const i = (d as walletItemsData).pocketIndex;
         return (this.radix ** i).toString();
-      })
+      });
+
+    creationControls
+      .append("div")
+      .attr("class", "add-button")
+      .text("+")
       .on("click", (ev, d) => {
         const i = (d as walletItemsData).pocketIndex;
-        const v = this.pockets[i];
-        this.setPocket(i, v + 1);
-        // this.updateUI();
+        this.addCoin(i);
       });
 
     explodingControls

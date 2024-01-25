@@ -17,9 +17,25 @@ body {
   width: 20px;
   height: 20px;
 }
-.creation-button {
+.coin-value {
   text-align: center;
   user-select: none;
   background: rgb(244, 233, 40);
+  height: 20px;
+}
+
+.add-button {
+  text-align: center;
+  user-select: none;
+  background: rgb(238, 164, 164);
+  width: 20px;
+  height: 20px;
+}
+
+.substract-button {
+  text-align: center;
+  user-select: none;
+  background: rgb(174, 174, 237);
+  width: 20px;
   height: 20px;
 }
