@@ -5,10 +5,12 @@
   "author": "Daniel Ramos",
   "license": "ISC",
   "dependencies": {
-    "d3-selection": "^3.0.0"
+    "d3-selection": "^3.0.0",
+    "d3-transition": "^3.0.0"
   },
   "devDependencies": {
-    "@types/d3-selection": "^3.0.10",
+    "@types/d3-selection": "^3.0.0",
+    "@types/d3-transition": "^3.0.0",
     "parcel": "^2.11.0",
     "prettier": "^3.1.1"
   },

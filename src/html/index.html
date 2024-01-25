@@ -12,6 +12,17 @@
 
     <div id="wallet-container"></div>
 
+    <!-- <svg style="width: 200px; height: 200px" , viewBox="0 0 300 200">
+      <use href="../svg/coin-num.svg#coin"></use>
+    </svg>
+    <script type="module">
+      const parser = new DOMParser();
+      console.log("Script B");
+      fetch(new URL("../svg/coin.svg", import.meta.url).href)
+        .then((d) => d.text())
+        .then((d) => console.log(parser.parseFromString(d, "image/svg+xml")));
+    </script> -->
+
     <script src="../ts/main.ts" type="module"></script>
   </body>
 </html>

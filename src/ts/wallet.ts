@@ -1,4 +1,6 @@
-import * as d3 from "d3-selection";
+import { Selection, select, selectAll } from "d3-selection";
+import { transition } from "d3-transition";
+const d3 = { select, selectAll, transition };
 
 interface wallet {
   radix: number;
@@ -12,13 +14,13 @@ class wallet implements wallet {
     this.pockets = new Array(numPockets).fill(0);
     this.setPocket(0, 143);
     this.createUI(document.getElementById("wallet-container") as HTMLElement);
-    this.updateUI();
+    this.fillPocketsUI();
   }
   setPocket(index: number, x: number) {
     this.pockets[index] = x;
   }
 
-  // explode: join points into next pocket
+  // explode: join points on index index into next pocket
   explode(index: number) {
     if (index >= this.pockets.length) {
       return;
@@ -27,10 +29,21 @@ class wallet implements wallet {
       this.pockets[index] -= this.radix;
       this.pockets[index + 1] += 1;
     }
-    this.updateUI();
+    this.fillPocketsUI();
+    // this.explodeAnimation(index);
   }
 
-  // unexplode: split points into previous pocket
+  explodeAnimation(index: number) {
+    const nextPocket = d3.selectAll(".pocket").filter((d) => d == index + 1);
+    const currentCoinsNextPocket = nextPocket.select(".coin");
+    const numCurrentCoinsNextPocket = currentCoinsNextPocket.size();
+    const newCoin = currentCoinsNextPocket.append("div"); //.attr("class", "coin");
+    // .datum(numCurrentCoinsNextPocket);
+    // .style("visibility", "hidden");
+    console.log(numCurrentCoinsNextPocket, newCoin);
+  }
+
+  // unexplode: split points on index index into previous pocket
   unexplode(index: number) {
     if (index >= this.pockets.length || index < 1) {
       return;
@@ -39,7 +52,7 @@ class wallet implements wallet {
       this.pockets[index] -= 1;
       this.pockets[index - 1] += this.radix;
     }
-    this.updateUI();
+    this.fillPocketsUI();
   }
 
   value() {
@@ -51,18 +64,20 @@ class wallet implements wallet {
   createUI(container: HTMLElement) {
     const div = d3.select(container).append("div").attr("id", "wallet");
 
-    interface itemList {
-      type: string;
+    interface walletItemsData {
+      type: "pocket" | "expControls";
       pocketIndex: number;
     }
 
+    // make list of pockets with the amount of coins as value.
     const pocketsList = this.pockets.map((d, i) => ({
       type: "pocket",
       value: d,
       pocketIndex: i,
-    }));
+    })) as walletItemsData[];
 
-    const itemsList = [] as itemList[];
+    // make list of items: pockets and exploding controls, alternated
+    const itemsList = [] as walletItemsData[];
     pocketsList.forEach((d, i) => {
       itemsList.push(d);
       if (i < pocketsList.length - 1) {
@@ -70,8 +85,7 @@ class wallet implements wallet {
       }
     });
 
-    console.log(itemsList);
-
+    // create items
     const items = div
       .selectAll("div")
       .data(itemsList)
@@ -81,6 +95,7 @@ class wallet implements wallet {
         d.type === "pocket" ? "pocket" : "exploding-controls"
       );
 
+    // create structure on pockets
     const pockets = d3.selectAll(".pocket");
     const graphicPockets = pockets
       .append("div")
@@ -97,14 +112,14 @@ class wallet implements wallet {
       .append("div")
       .attr("class", "creation-button")
       .text((d) => {
-        const i = (d as itemList).pocketIndex;
+        const i = (d as walletItemsData).pocketIndex;
         return (this.radix ** i).toString();
       })
       .on("click", (ev, d) => {
-        const i = (d as itemList).pocketIndex;
+        const i = (d as walletItemsData).pocketIndex;
         const v = this.pockets[i];
         this.setPocket(i, v + 1);
-        this.updateUI();
+        // this.updateUI();
       });
 
     explodingControls
@@ -112,7 +127,7 @@ class wallet implements wallet {
       .attr("class", "explode-button")
       .text("⇦")
       .on("click", (ev, d) => {
-        this.explode((d as itemList).pocketIndex);
+        this.explode((d as walletItemsData).pocketIndex);
       });
 
     explodingControls
@@ -120,13 +135,68 @@ class wallet implements wallet {
       .attr("class", "unexplode-button")
       .text("⇨")
       .on("click", (ev, d: any) =>
-        this.unexplode((d as itemList).pocketIndex + 1)
+        this.unexplode((d as walletItemsData).pocketIndex + 1)
       );
   }
 
-  updateUI() {
-    const pockets = d3.selectAll(".numeric-pocket").data(this.pockets);
-    pockets.text((d) => d.toString());
+  // fills pockets with coins according to this.pockets[]
+  fillPocketsUI() {
+    const pocketsList = this.pockets.map((d, i) => ({
+      type: "pocket",
+      value: d,
+      coinList: new Array(d).map((d, i) => i),
+      pocketIndex: i,
+    }));
+
+    const pockets = d3.selectAll(".pocket").data(pocketsList);
+
+    const numericPockets = pockets.select(".numeric-pocket");
+    numericPockets.text((d) => d.value.toString());
+
+    const graphicPockets = pockets.each((p, i, n) => {
+      const coins = d3
+        .select(n[i])
+        .select(".graphic-pocket")
+        .selectAll("div")
+        .data(p.coinList);
+
+      coins
+        .enter()
+        .append("div")
+        .append("svg")
+        .attr("width", 15)
+        .attr("viewBox", "0 0 253 214")
+        .append("image")
+        .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
+
+      coins.exit().remove();
+    });
+
+    // if (enterSel.size() === 1 && exitSel.size() === this.radix) {
+    //   // exploding
+    //   exitSel.style("visibility", "hidden");
+    //   const finalPosition = enterSel.node().getBoundingClientRect();
+
+    //   console.log("Exploding to ", finalPosition);
+    //   const endExitSel = exitSel
+    //     .style("left", (d, i, n) => n[i].getBoundingClientRect().left + "px")
+    //     .style("top", (d, i, n) => n[i].getBoundingClientRect().top + "px")
+    //     .style("width", (d, i, n) => n[i].getBoundingClientRect().width + "px")
+    //     .style(
+    //       "height",
+    //       (d, i, n) => n[i].getBoundingClientRect().height + "px"
+    //     )
+    //     .style("position", "fixed")
+    //     .transition()
+    //     .duration(1000)
+    //     .style("left", finalPosition.left + "px")
+    //     .style("top", finalPosition.top + "px")
+    //     .remove();
+
+    // endExitSel.then(() => {
+    //   exitSel.style("visibility", "visible");
+    //   exitSel.remove();
+    // });
   }
 }
 
