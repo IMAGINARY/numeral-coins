@@ -5,23 +5,36 @@
   <head>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/checkbox-selector.css" />
   </head>
 
   <body>
-    Hello world!
+    <div id="senior-mode-ckb">
+      Junior
+      <span class="checkbox-wrapper-49">
+        <div class="block">
+          <input data-index="0" id="cheap-49" type="checkbox" />
+          <label for="cheap-49"></label>
+        </div>
+      </span>
+      Senior
+    </div>
+
+    <div>
+      Radix:
+      <input type="number" id="radix" value="4" min="2" max="20" />
+    </div>
+
+    <div id="prize"></div>
+
+    <div>
+      Current:
+      <span id="total"></span>
+    </div>
 
     <div id="wallet-container"></div>
 
-    <!-- <svg style="width: 200px; height: 200px" , viewBox="0 0 300 200">
-      <use href="../svg/coin-num.svg#coin"></use>
-    </svg>
-    <script type="module">
-      const parser = new DOMParser();
-      console.log("Script B");
-      fetch(new URL("../svg/coin.svg", import.meta.url).href)
-        .then((d) => d.text())
-        .then((d) => console.log(parser.parseFromString(d, "image/svg+xml")));
-    </script> -->
+    <div id="results"></div>
 
     <script src="../ts/main.ts" type="module"></script>
   </body>

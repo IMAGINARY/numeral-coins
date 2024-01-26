@@ -32,6 +32,8 @@ body {
   height: 20px;
 }
 
+
+
 .substract-button {
   text-align: center;
   user-select: none;
@@ -39,3 +41,10 @@ body {
   width: 20px;
   height: 20px;
 }
+
+#results{
+  font-size: 200%;
+  margin: 1em;
+}
+
+

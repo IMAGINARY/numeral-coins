@@ -12,7 +12,7 @@ class wallet implements wallet {
   constructor(radix: number, numPockets: number) {
     this.radix = radix;
     this.pockets = new Array(numPockets).fill(0);
-    this.setPocket(0, 143);
+    // this.setPocket(0, 143);
     this.createUI(document.getElementById("wallet-container") as HTMLElement);
     this.fillPocketsUI();
   }
@@ -68,7 +68,8 @@ class wallet implements wallet {
 
   value() {
     return this.pockets.reduce(
-      (acc, curr, i) => acc + curr * Math.pow(this.radix, i)
+      (acc, curr, i) => acc + curr * Math.pow(this.radix, i),
+      0
     );
   }
 
@@ -120,7 +121,7 @@ class wallet implements wallet {
     const explodingControls = d3.selectAll(".exploding-controls");
 
     creationControls
-      .append("div")
+      .append("button")
       .attr("class", "substract-button")
       .text("-")
       .on("click", (ev, d) => {
@@ -137,7 +138,7 @@ class wallet implements wallet {
       });
 
     creationControls
-      .append("div")
+      .append("button")
       .attr("class", "add-button")
       .text("+")
       .on("click", (ev, d) => {
@@ -220,6 +221,54 @@ class wallet implements wallet {
     //   exitSel.style("visibility", "visible");
     //   exitSel.remove();
     // });
+    d3.select("#total").text(this.value());
+    this.checkGoal();
+    this.checkDecomposed();
+  }
+
+  // Check if the value in the wallet is the goal price
+  checkGoal() {
+    if (this.value() === window.price) {
+      this.goalReached();
+    }
+  }
+  goalReached() {
+    console.log("Goal reached");
+    d3.selectAll(".add-button").property("disabled", true);
+    d3.selectAll(".substract-button").property("disabled", true);
+  }
+
+  // Check if the pockets represent the base-r decomposition
+  checkDecomposed() {
+    const goalValues = this.value()
+      .toString(this.radix)
+      .split("")
+      .map((d) => parseInt(d, this.radix))
+      .reverse();
+    const padding = this.pockets.length - goalValues.length;
+    for (let k = 0; k < padding; k += 1) {
+      goalValues.push(0);
+    }
+
+    if (this.pockets.toString() === goalValues.toString()) {
+      this.decompositionFound();
+    }
+  }
+
+  decompositionFound() {
+    console.log("Decomposition found");
+
+    const monomials = this.pockets
+      .map((v, i) =>
+        v ? `${v.toString()} × ${this.radix} <sup>${i}</sup>` : ``
+      )
+      .filter((n) => n);
+
+    const message = `${this.value()} = ` + monomials.reverse().join(" + ");
+
+    if (this.value()) {
+      d3.select("#results").html(message);
+    }
   }
 }
 
