@@ -147,7 +147,7 @@ class wallet implements wallet {
       });
 
     explodingControls
-      .append("div")
+      .append("button")
       .attr("class", "explode-button")
       .text("⇦")
       .on("click", (ev, d) => {
@@ -155,7 +155,7 @@ class wallet implements wallet {
       });
 
     explodingControls
-      .append("div")
+      .append("button")
       .attr("class", "unexplode-button")
       .text("⇨")
       .on("click", (ev, d: any) =>
@@ -222,15 +222,18 @@ class wallet implements wallet {
     //   exitSel.remove();
     // });
     d3.select("#total").text(this.value());
-    this.checkGoal();
-    this.checkDecomposed();
+    if (this.checkGoal()) {
+      this.goalReached();
+
+      if (this.checkDecomposed()) {
+        this.decompositionFound();
+      }
+    }
   }
 
   // Check if the value in the wallet is the goal price
   checkGoal() {
-    if (this.value() === window.price) {
-      this.goalReached();
-    }
+    return this.value() === window.price;
   }
   goalReached() {
     console.log("Goal reached");
@@ -250,9 +253,7 @@ class wallet implements wallet {
       goalValues.push(0);
     }
 
-    if (this.pockets.toString() === goalValues.toString()) {
-      this.decompositionFound();
-    }
+    return this.pockets.toString() === goalValues.toString();
   }
 
   decompositionFound() {
@@ -260,7 +261,10 @@ class wallet implements wallet {
 
     const monomials = this.pockets
       .map((v, i) =>
-        v ? `${v.toString()} × ${this.radix} <sup>${i}</sup>` : ``
+        v
+          ? `<span class="coefficient-text">${v.toString()}</span>
+           × <span class="radix-text">${this.radix}</span><sup>${i}</sup>`
+          : ``
       )
       .filter((n) => n);
 
@@ -269,6 +273,8 @@ class wallet implements wallet {
     if (this.value()) {
       d3.select("#results").html(message);
     }
+    d3.selectAll(".explode-button").property("disabled", true);
+    d3.selectAll(".unexplode-button").property("disabled", true);
   }
 }
 

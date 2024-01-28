@@ -1,6 +1,6 @@
-import "./wallet";
 import wallet from "./wallet";
 import * as d3 from "d3-selection";
+import { prizes } from "./prizes";
 
 declare global {
   interface Window {
@@ -35,11 +35,23 @@ function makeWallet() {
 }
 
 function newPrize() {
-  window.price = 150;
-  d3.select("#price").text(window.price);
+  const i = Math.floor(Math.random() * prizes.length);
+  d3.select("#prize").select("img").attr("src", prizes[i].img);
+  d3.select("#price").text(prizes[i].price.toString());
+
+  window.price = prizes[i].price;
 }
 
 d3.select("#radix").on("change", makeWallet);
+
+d3.select("#newprize")
+  .append("button")
+  .text("New")
+  .on("click", () => {
+    d3.select("#results").text("");
+    newPrize();
+    makeWallet();
+  });
 
 d3.select("#prize")
   .append("div")

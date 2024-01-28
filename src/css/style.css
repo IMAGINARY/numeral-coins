@@ -7,15 +7,18 @@ body {
   text-align: center;
   user-select: none;
   background: rgb(238, 164, 164);
-  width: 20px;
-  height: 20px;
+  /* width: 20px;
+  height: 20px; */
+  padding: 5px;
 }
 .unexplode-button {
   text-align: center;
   user-select: none;
   background: rgb(174, 174, 237);
-  width: 20px;
-  height: 20px;
+  /* width: 20px;
+  height: 20px; */
+  padding: 5px;
+
 }
 .coin-value {
   text-align: center;
@@ -28,8 +31,9 @@ body {
   text-align: center;
   user-select: none;
   background: rgb(238, 164, 164);
-  width: 20px;
-  height: 20px;
+  /* width: 20px;
+  height: 20px; */
+  padding: 5px;
 }
 
 
@@ -38,8 +42,9 @@ body {
   text-align: center;
   user-select: none;
   background: rgb(174, 174, 237);
-  width: 20px;
-  height: 20px;
+  /* width: 20px;
+  height: 20px; */
+  padding: 5px;
 }
 
 #results{
@@ -47,4 +52,10 @@ body {
   margin: 1em;
 }
 
+.radix-text{
+  color: brown;
+}
 
+.coefficient-text{
+  color:#027cb4;
+}
