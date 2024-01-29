@@ -255,30 +255,45 @@ class wallet implements wallet {
 
     const vanishingCoins = coins.exit();
 
-    // vanishingCoins
-    //   .remove()
-    //   .each(
-    //     (d, i, n) =>
-    //       document.getElementById("animation-container")?.appendChild(n[i])
-    //   );
+    const initialPositions = d3.local();
+
+    vanishingCoins.each((d, i, n) =>
+      initialPositions.set(
+        n[i] as HTMLElement,
+        (n[i] as HTMLElement).getBoundingClientRect()
+      )
+    );
+
+    vanishingCoins
+      .remove()
+      .each(
+        (d, i, n) =>
+          document
+            .getElementById("animation-container")
+            ?.appendChild(n[i] as HTMLElement)
+      );
 
     vanishingCoins
       .style(
         "left",
-        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().left + "px"
+        (d, i, n) =>
+          (initialPositions.get(n[i] as HTMLElement) as DOMRect).left + "px"
       )
       .style(
         "top",
-        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().top + "px"
+        (d, i, n) =>
+          (initialPositions.get(n[i] as HTMLElement) as DOMRect).top + "px"
       )
-      .style(
-        "width",
-        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().width + "px"
-      )
-      .style(
-        "height",
-        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().height + "px"
-      )
+      // .style(
+      //   "width",
+      //   (d, i, n) =>
+      //     (initialPositions.get(n[i] as HTMLElement) as DOMRect).width + "px"
+      // )
+      // .style(
+      //   "height",
+      //   (d, i, n) =>
+      //     (initialPositions.get(n[i] as HTMLElement) as DOMRect).height + "px"
+      // )
       .style("position", "fixed")
       .transition()
       .duration(1000)
@@ -340,11 +355,35 @@ class wallet implements wallet {
 
     const finalPositions = d3.local();
 
-    newCoins.each((d, i, n) =>
-      finalPositions.set(n[i], (n[i] as HTMLElement).getBoundingClientRect())
-    );
+    newCoins.each((d, i, n) => {
+      const clone = n[i].cloneNode(true);
+      (clone as HTMLElement).classList.add("choose");
+      document.getElementById("animation-container")?.appendChild(clone);
+      finalPositions.set(
+        clone as HTMLElement,
+        (n[i] as HTMLElement).getBoundingClientRect()
+      );
+    });
 
-    newCoins
+    newCoins.style("visibility", "hidden");
+
+    const animatedCoins = d3
+      .select("#animation-container")
+      .selectAll(".choose")
+      .classed("choose", false);
+
+    console.log(animatedCoins);
+
+    // newCoins
+    //   .remove()
+    //   .each(
+    //     (d, i, n) =>
+    //       document
+    //         .getElementById("animation-container")
+    //         ?.appendChild(n[i] as HTMLElement)
+    //   );
+
+    animatedCoins
       .style("left", (d, i, n) => initialPosition.left + "px")
       .style("top", (d, i, n) => initialPosition.top + "px")
       .style("width", (d, i, n) => initialPosition.width + "px")
@@ -360,6 +399,7 @@ class wallet implements wallet {
         "top",
         (d, i, n) => (finalPositions.get(n[i]) as DOMRect).top + "px"
       )
+      .remove()
       .end()
       .then(() => {
         console.log("finished");
