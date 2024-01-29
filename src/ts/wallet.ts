@@ -1,6 +1,6 @@
-import { Selection, select, selectAll } from "d3-selection";
+import { Selection, select, selectAll, local } from "d3-selection";
 import { transition } from "d3-transition";
-const d3 = { select, selectAll, transition };
+const d3 = { select, selectAll, transition, local };
 
 interface wallet {
   radix: number;
@@ -40,19 +40,19 @@ class wallet implements wallet {
       this.pockets[index] -= this.radix;
       this.pockets[index + 1] += 1;
     }
-    this.fillPocketsUI();
-    // this.explodeAnimation(index);
+    // this.fillPocketsUI();
+    this.explodeAnimation();
   }
 
-  explodeAnimation(index: number) {
-    const nextPocket = d3.selectAll(".pocket").filter((d) => d == index + 1);
-    const currentCoinsNextPocket = nextPocket.select(".coin");
-    const numCurrentCoinsNextPocket = currentCoinsNextPocket.size();
-    const newCoin = currentCoinsNextPocket.append("div"); //.attr("class", "coin");
-    // .datum(numCurrentCoinsNextPocket);
-    // .style("visibility", "hidden");
-    console.log(numCurrentCoinsNextPocket, newCoin);
-  }
+  // explodeAnimation(index: number) {
+  //   const nextPocket = d3.selectAll(".pocket").filter((d) => d == index + 1);
+  //   const currentCoinsNextPocket = nextPocket.select(".coin");
+  //   const numCurrentCoinsNextPocket = currentCoinsNextPocket.size();
+  //   const newCoin = currentCoinsNextPocket.append("div"); //.attr("class", "coin");
+  //   // .datum(numCurrentCoinsNextPocket);
+  //   // .style("visibility", "hidden");
+  //   console.log(numCurrentCoinsNextPocket, newCoin);
+  // }
 
   // unexplode: split points on index index into previous pocket
   unexplode(index: number) {
@@ -63,7 +63,8 @@ class wallet implements wallet {
       this.pockets[index] -= 1;
       this.pockets[index - 1] += this.radix;
     }
-    this.fillPocketsUI();
+    // this.fillPocketsUI();
+    this.unexplodeAnimation();
   }
 
   value() {
@@ -165,63 +166,33 @@ class wallet implements wallet {
 
   // fills pockets with coins according to this.pockets[]
   fillPocketsUI() {
-    const pocketsList = this.pockets.map((d, i) => ({
-      type: "pocket",
-      value: d,
-      coinList: new Array(d).map((d, i) => i),
-      pocketIndex: i,
-    }));
+    const coinsLists = this.pockets.map((d) =>
+      new Array(d).fill(0).map((d, i) => i)
+    );
 
-    const pockets = d3.selectAll(".pocket").data(pocketsList);
+    const pockets = d3.selectAll(".pocket").data(coinsLists);
 
-    const numericPockets = pockets.select(".numeric-pocket");
-    numericPockets.text((d) => d.value.toString());
+    pockets.select(".numeric-pocket").text((d) => d.length.toString());
 
-    const graphicPockets = pockets.each((p, i, n) => {
-      const coins = d3
-        .select(n[i])
-        .select(".graphic-pocket")
-        .selectAll("div")
-        .data(p.coinList);
+    const coins = pockets
+      .select(".graphic-pocket")
+      .selectAll("div")
+      .data((d, i) => d.map((v) => ({ pocketIndex: i, coinIndex: v })));
 
-      coins
-        .enter()
-        .append("div")
-        .append("svg")
-        .attr("width", 15)
-        .attr("viewBox", "0 0 253 214")
-        .append("image")
-        .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
+    coins
+      .enter()
+      .append("div")
+      .classed("coin", true)
+      .append("svg")
+      .attr("width", 15)
+      .attr("viewBox", "0 0 253 214")
+      .append("image")
+      .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
 
-      coins.exit().remove();
-    });
+    coins.exit().remove();
 
-    // if (enterSel.size() === 1 && exitSel.size() === this.radix) {
-    //   // exploding
-    //   exitSel.style("visibility", "hidden");
-    //   const finalPosition = enterSel.node().getBoundingClientRect();
-
-    //   console.log("Exploding to ", finalPosition);
-    //   const endExitSel = exitSel
-    //     .style("left", (d, i, n) => n[i].getBoundingClientRect().left + "px")
-    //     .style("top", (d, i, n) => n[i].getBoundingClientRect().top + "px")
-    //     .style("width", (d, i, n) => n[i].getBoundingClientRect().width + "px")
-    //     .style(
-    //       "height",
-    //       (d, i, n) => n[i].getBoundingClientRect().height + "px"
-    //     )
-    //     .style("position", "fixed")
-    //     .transition()
-    //     .duration(1000)
-    //     .style("left", finalPosition.left + "px")
-    //     .style("top", finalPosition.top + "px")
-    //     .remove();
-
-    // endExitSel.then(() => {
-    //   exitSel.style("visibility", "visible");
-    //   exitSel.remove();
-    // });
     d3.select("#total").text(this.value());
+
     if (this.checkGoal()) {
       this.goalReached();
 
@@ -231,6 +202,154 @@ class wallet implements wallet {
     }
   }
 
+  explodeAnimation() {
+    const coinsLists = this.pockets.map((d) =>
+      new Array(d).fill(0).map((d, i) => i)
+    );
+
+    const pockets = d3.selectAll(".pocket").data(coinsLists);
+
+    pockets.select(".numeric-pocket").text((d) => d.length.toString());
+
+    const coins = pockets
+      .select(".graphic-pocket")
+      .selectAll("div")
+      .data((d, i) => d.map((v) => ({ pocketIndex: i, coinIndex: v })));
+
+    const newCoin = coins
+      .enter()
+      .append("div")
+      .classed("coin", true)
+      .style("visibility", "hidden");
+
+    newCoin
+      .append("svg")
+      .attr("width", 15)
+      .attr("viewBox", "0 0 253 214")
+      .append("image")
+      .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
+
+    const finalPosition = newCoin.node()?.getBoundingClientRect();
+
+    const vanishingCoins = coins.exit();
+    vanishingCoins
+      .style(
+        "left",
+        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().left + "px"
+      )
+      .style(
+        "top",
+        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().top + "px"
+      )
+      .style(
+        "width",
+        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().width + "px"
+      )
+      .style(
+        "height",
+        (d, i, n) => (n[i] as HTMLElement).getBoundingClientRect().height + "px"
+      )
+      .style("position", "fixed")
+      .transition()
+      .duration(1000)
+      .style("left", finalPosition?.left + "px")
+      .style("top", finalPosition?.top + "px")
+      .remove()
+      .end()
+      .then(() => {
+        console.log("finished");
+        newCoin.style("visibility", "visible");
+      })
+      .catch(() => {
+        console.log("catched");
+        newCoin.style("visibility", "visible");
+        vanishingCoins.remove();
+      });
+
+    d3.select("#total").text(this.value());
+
+    if (this.checkGoal()) {
+      this.goalReached();
+
+      if (this.checkDecomposed()) {
+        this.decompositionFound();
+      }
+    }
+  }
+
+  unexplodeAnimation() {
+    const coinsLists = this.pockets.map((d) =>
+      new Array(d).fill(0).map((d, i) => i)
+    );
+
+    const pockets = d3.selectAll(".pocket").data(coinsLists);
+
+    pockets.select(".numeric-pocket").text((d) => d.length.toString());
+
+    const coins = pockets
+      .select(".graphic-pocket")
+      .selectAll("div")
+      .data((d, i) => d.map((v) => ({ pocketIndex: i, coinIndex: v })));
+
+    const newCoins = coins.enter().append("div").classed("coin", true);
+
+    newCoins
+      .append("svg")
+      .attr("width", 15)
+      .attr("viewBox", "0 0 253 214")
+      .append("image")
+      .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
+
+    const vanishingCoin = coins.exit();
+
+    const initialPosition = (
+      vanishingCoin.node() as HTMLElement
+    ).getBoundingClientRect();
+
+    vanishingCoin.remove();
+
+    const finalPositions = d3.local();
+
+    newCoins.each((d, i, n) =>
+      finalPositions.set(n[i], (n[i] as HTMLElement).getBoundingClientRect())
+    );
+
+    newCoins
+      .style("left", (d, i, n) => initialPosition.left + "px")
+      .style("top", (d, i, n) => initialPosition.top + "px")
+      .style("width", (d, i, n) => initialPosition.width + "px")
+      .style("height", (d, i, n) => initialPosition.height + "px")
+      .style("position", "fixed")
+      .transition()
+      .duration(1000)
+      .style(
+        "left",
+        (d, i, n) => (finalPositions.get(n[i]) as DOMRect).left + "px"
+      )
+      .style(
+        "top",
+        (d, i, n) => (finalPositions.get(n[i]) as DOMRect).top + "px"
+      )
+      .end()
+      .then(() => {
+        console.log("finished");
+        newCoins.attr("style", null);
+      })
+      .catch(() => {
+        console.log("catched");
+        newCoins.attr("style", null);
+      });
+
+    d3.select("#total").text(this.value());
+
+    if (this.checkGoal()) {
+      this.goalReached();
+
+      if (this.checkDecomposed()) {
+        this.decompositionFound();
+      }
+    }
+  }
   // Check if the value in the wallet is the goal price
   checkGoal() {
     return this.value() === window.price;
