@@ -23,8 +23,9 @@ body {
 .coin-value {
   text-align: center;
   user-select: none;
-  background: rgb(244, 233, 40);
-  height: 20px;
+  /* background: rgb(244, 233, 40); */
+  height: 60px;
+  width: 60px;
 }
 
 .add-button {

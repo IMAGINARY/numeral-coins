@@ -1,6 +1,17 @@
 import { Selection, select, selectAll, local } from "d3-selection";
 import { transition } from "d3-transition";
-const d3 = { select, selectAll, transition, local };
+import { svg } from "d3-fetch";
+const d3 = { select, selectAll, transition, local, svg };
+
+async function loadCoinArt(parent: HTMLElement, value: number) {
+  const newsvg = await d3.svg(
+    new URL("../svg/coin-num.svg", import.meta.url).href
+  );
+  var svgNode = newsvg.getElementById("coin");
+  d3.select(svgNode).select("#faceValue").text(value.toString());
+  parent.appendChild(svgNode as HTMLElement);
+  // return svgNode;
+}
 
 interface wallet {
   radix: number;
@@ -110,9 +121,18 @@ class wallet implements wallet {
 
     // create structure on pockets
     const pockets = d3.selectAll(".pocket");
-    const graphicPockets = pockets
+
+    const graphicPocketsContainer = pockets
       .append("div")
-      .attr("class", "graphic-pocket");
+      .classed("graphic-pocket-container", true);
+
+    graphicPocketsContainer
+      .append("svg")
+      .append("image")
+      .attr("href", new URL("../svg/bag.svg#svg1", import.meta.url).href);
+
+    graphicPocketsContainer.append("div").attr("class", "graphic-pocket");
+
     const numericPockets = pockets
       .append("div")
       .attr("class", "numeric-pocket");
@@ -130,12 +150,12 @@ class wallet implements wallet {
         this.removeCoin(i);
       });
 
-    creationControls
+    const coinPic = creationControls
       .append("div")
       .attr("class", "coin-value")
-      .text((d) => {
-        const i = (d as walletItemsData).pocketIndex;
-        return (this.radix ** i).toString();
+      .each((d, i, n) => {
+        const ind = (d as walletItemsData).pocketIndex;
+        loadCoinArt(n[i], this.radix ** i);
       });
 
     creationControls
@@ -162,6 +182,8 @@ class wallet implements wallet {
       .on("click", (ev, d: any) =>
         this.unexplode((d as walletItemsData).pocketIndex + 1)
       );
+
+    div.append("div").attr("id", "animation-container");
   }
 
   // fills pockets with coins according to this.pockets[]
@@ -232,6 +254,14 @@ class wallet implements wallet {
     const finalPosition = newCoin.node()?.getBoundingClientRect();
 
     const vanishingCoins = coins.exit();
+
+    // vanishingCoins
+    //   .remove()
+    //   .each(
+    //     (d, i, n) =>
+    //       document.getElementById("animation-container")?.appendChild(n[i])
+    //   );
+
     vanishingCoins
       .style(
         "left",

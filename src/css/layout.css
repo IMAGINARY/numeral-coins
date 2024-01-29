@@ -1,21 +1,43 @@
 #wallet {
     display: flex;
+    flex-wrap: wrap-reverse;
     flex-direction: row-reverse;
     justify-content: space-evenly;
+    position: relative;
 }
 
 
-
-.graphic-pocket {
+.graphic-pocket-container {
+    position: relative;
     width: 200px;
     height: 300px;
+    /* border: 2px solid red; */
     text-align: center;
-    border: 2px solid black;
+}
+
+.graphic-pocket-container svg {
+    width: 100%;
+    height: 100%;
+}
+.graphic-pocket-container image {
+    width: 100%;
+    height: 100%;
+}
+
+
+.graphic-pocket {
+    /* border: 2px solid black; */
+    position: absolute;
+    bottom: 14px;
+    left:20px;
+    width: 150px;
+    height: 140px;
+    text-align: center;
     border-radius: 5px;
     display: flex;
     flex-wrap: wrap;
     overflow: scroll;
-    flex-direction: row;
+    flex-direction: column-reverse;
     align-content: flex-start;
     justify-content: flex-start;
 }
@@ -44,4 +66,11 @@
     display: flex;
     justify-content: space-evenly;
     min-height: 20px;
+}
+
+#animation-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
