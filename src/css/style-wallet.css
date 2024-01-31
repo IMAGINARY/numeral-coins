@@ -1,5 +1,3 @@
-
-
 .explode-button {
   text-align: center;
   user-select: none;
@@ -15,7 +13,6 @@
   /* width: 20px;
   height: 20px; */
   padding: 5px;
-
 }
 .coin-value {
   text-align: center;
@@ -34,8 +31,6 @@
   padding: 5px;
 }
 
-
-
 .substract-button {
   text-align: center;
   user-select: none;
@@ -44,4 +39,3 @@
   height: 20px; */
   padding: 5px;
 }
-
