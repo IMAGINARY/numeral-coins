@@ -1,62 +1,36 @@
 
 body {
-  font-family: sans-serif;
-}
-
-.explode-button {
-  text-align: center;
-  user-select: none;
-  background: rgb(238, 164, 164);
-  /* width: 20px;
-  height: 20px; */
-  padding: 5px;
-}
-.unexplode-button {
-  text-align: center;
-  user-select: none;
-  background: rgb(174, 174, 237);
-  /* width: 20px;
-  height: 20px; */
-  padding: 5px;
-
-}
-.coin-value {
-  text-align: center;
-  user-select: none;
-  /* background: rgb(244, 233, 40); */
-  height: 60px;
-  width: 60px;
-}
-
-.add-button {
-  text-align: center;
-  user-select: none;
-  background: rgb(238, 164, 164);
-  /* width: 20px;
-  height: 20px; */
-  padding: 5px;
-}
+    font-family: sans-serif;
+    font-size: 200%;
+  }
 
 
+ #prize {
+    /* border: 2px solid red; */
+    text-align: center;
+    padding: 1em;
+    margin-bottom: 2em;
+ } 
 
-.substract-button {
-  text-align: center;
-  user-select: none;
-  background: rgb(174, 174, 237);
-  /* width: 20px;
-  height: 20px; */
-  padding: 5px;
-}
+ #price {
+    border: 2px solid black;
+    border-radius: 5px;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+ } 
 
 #results{
-  font-size: 200%;
-  margin: 1em;
-}
-
-.radix-text{
-  color: brown;
-}
-
-.coefficient-text{
-  color:#027cb4;
-}
+    /* font-size: 200%; */
+    margin: 1em;
+    text-align: center;
+  }
+  
+  .radix-text{
+    color: brown;
+  }
+  
+  .coefficient-text{
+    color:#027cb4;
+  }

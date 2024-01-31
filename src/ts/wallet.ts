@@ -184,6 +184,16 @@ class wallet implements wallet {
       );
 
     div.append("div").attr("id", "animation-container");
+
+    // Create current value display
+    d3.select("#walletValue-container")
+      .append("span")
+      .attr("id", "walletValue")
+      .append("svg")
+      .append("image")
+      .attr("href", new URL("../svg/3bags.svg#svg1", import.meta.url).href);
+
+    d3.select("#walletValue").append("span").attr("id", "total");
   }
 
   // fills pockets with coins according to this.pockets[]
@@ -393,11 +403,13 @@ class wallet implements wallet {
       .duration(1000)
       .style(
         "left",
-        (d, i, n) => (finalPositions.get(n[i]) as DOMRect).left + "px"
+        (d, i, n) =>
+          (finalPositions.get(n[i] as HTMLElement) as DOMRect).left + "px"
       )
       .style(
         "top",
-        (d, i, n) => (finalPositions.get(n[i]) as DOMRect).top + "px"
+        (d, i, n) =>
+          (finalPositions.get(n[i] as HTMLElement) as DOMRect).top + "px"
       )
       .remove()
       .end()

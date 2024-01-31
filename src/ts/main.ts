@@ -21,6 +21,7 @@ function makeWallet() {
   console.log("making wallet");
 
   document.getElementById("wallet")?.remove();
+  document.getElementById("walletValue")?.remove();
 
   let radix = Math.max(
     Number((document.getElementById("radix") as HTMLInputElement).value),
@@ -53,17 +54,11 @@ d3.select("#newprize")
     makeWallet();
   });
 
-d3.select("#prize")
-  .append("div")
-  .append("img")
-  .attr("src", new URL("../img/diamond.png", import.meta.url).href)
-  .attr("width", "200");
+d3.select("#prize").append("div").append("img").attr("width", "200");
 
-d3.select("#prize")
-  .append("div")
-  .text("Price: ")
-  .append("span")
-  .attr("id", "price");
+d3.select("#prize").append("span").attr("id", "price");
+
+d3.select("#prize").append("span").attr("id", "walletValue-container");
 
 makeWallet();
 newPrize();

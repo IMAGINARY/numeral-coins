@@ -6,6 +6,31 @@
     position: relative;
 }
 
+#prize{
+    position: relative;
+}
+#walletValue {
+    position: absolute;
+    display: block;
+    bottom:0;
+    width: 100px;
+    height: 150px;
+    /* border: 2px solid red; */
+    text-align: center;
+}
+
+#walletValue svg, image{
+    width: 100%;
+    height: 100%;
+}
+#total{
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    width: 80px;
+    text-anchor: middle;
+}
+
 
 .graphic-pocket-container {
     position: relative;
