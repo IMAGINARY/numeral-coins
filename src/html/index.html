@@ -7,24 +7,25 @@
     <link rel="stylesheet" href="../css/style-wallet.css" />
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/checkbox-selector.css" />
+    <link rel="stylesheet" href="../css/dropdown-menu.css" />
   </head>
 
   <body>
-    <div id="senior-mode-ckb">
-      Junior
-      <span class="checkbox-wrapper-49">
-        <div class="block">
-          <input data-index="0" id="cheap-49" type="checkbox" />
-          <label for="cheap-49"></label>
-        </div>
-      </span>
-      Senior
+    <div id="config-opts">
+      <div id="senior-mode-ckb">
+        Junior
+        <span class="checkbox-wrapper-49">
+          <div class="block">
+            <input data-index="0" id="cheap-49" type="checkbox" />
+            <label for="cheap-49"></label>
+          </div>
+        </span>
+        Senior
+      </div>
+      <div>ⓘ</div>
     </div>
 
-    <div>
-      Radix:
-      <input type="number" id="radix" value="4" min="2" max="20" />
-    </div>
+    <div id="radix-menu"></div>
 
     <div id="newprize"></div>
     <div id="prize"></div>

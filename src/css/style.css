@@ -1,6 +1,14 @@
 body {
   font-family: sans-serif;
   font-size: 200%;
+  user-select: none;
+}
+
+#config-opts {
+  float: right;
+  display: flex;
+  gap: 30px;
+  align-items: center;
 }
 
 #prize {
