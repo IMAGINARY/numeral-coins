@@ -438,8 +438,8 @@ class wallet implements wallet {
   }
   goalReached() {
     console.log("Goal reached");
-    d3.selectAll(".add-button").property("disabled", true);
-    d3.selectAll(".substract-button").property("disabled", true);
+    d3.selectAll(".add-button").classed("disabled", true);
+    d3.selectAll(".substract-button").classed("disabled", true);
   }
 
   // Check if the pockets represent the base-r decomposition
@@ -474,8 +474,8 @@ class wallet implements wallet {
     if (this.value()) {
       d3.select("#results").html(message);
     }
-    d3.selectAll(".explode-button").property("disabled", true);
-    d3.selectAll(".unexplode-button").property("disabled", true);
+    d3.selectAll(".explode-button").classed("disabled", true);
+    d3.selectAll(".unexplode-button").classed("disabled", true);
   }
 }
 

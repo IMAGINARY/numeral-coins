@@ -5,7 +5,9 @@ body {
 }
 
 #config-opts {
-  float: right;
+  position: absolute;
+  right: 0;
+  top: 0;
   display: flex;
   gap: 30px;
   align-items: center;
@@ -17,21 +19,28 @@ body {
   margin: 30px;
   width: 30px;
   height: 30px;
+  cursor: pointer;
+  pointer-events: all;
 }
 
 #prize {
   /* border: 2px solid red; */
   text-align: center;
   padding: 1em;
-  margin-bottom: 2em;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
 }
 #prize-img {
   width: 300px;
+  text-align: center;
 }
 
 #price {
   border: 2px solid black;
   background-color: bisque;
+  /* width: 300px; */
+  margin: auto;
   border-radius: 5px;
   padding-left: 1em;
   padding-right: 1em;
@@ -43,6 +52,7 @@ body {
   /* font-size: 200%; */
   margin: 1em;
   text-align: center;
+  height: 2em;
 }
 
 .radix-text {

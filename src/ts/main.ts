@@ -74,8 +74,6 @@ radixMenu
 
 d3.select("#radix").on("change", makeWallet);
 
-d3.select("#newprize");
-
 const prizeDiv = d3
   .select("#prize")
   .append("div")
@@ -93,7 +91,7 @@ prizeDiv
     makeWallet();
   });
 
-d3.select("#prize").append("span").attr("id", "price");
+prizeDiv.append("div").attr("id", "price");
 
 d3.select("#prize").append("span").attr("id", "walletValue-container");
 
