@@ -74,16 +74,24 @@ radixMenu
 
 d3.select("#radix").on("change", makeWallet);
 
-d3.select("#newprize")
-  .append("button")
-  .text("New")
+d3.select("#newprize");
+
+const prizeDiv = d3
+  .select("#prize")
+  .append("div")
+  .attr("id", "prize-img-container");
+
+prizeDiv.append("img").attr("id", "prize-img");
+
+prizeDiv
+  .append("img")
+  .attr("src", new URL("../img/reload.png", import.meta.url).href)
+  .attr("id", "prize-reload-button")
   .on("click", () => {
     d3.select("#results").text("");
     newPrize();
     makeWallet();
   });
-
-d3.select("#prize").append("div").append("img").attr("width", "200");
 
 d3.select("#prize").append("span").attr("id", "price");
 

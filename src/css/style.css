@@ -11,15 +11,27 @@ body {
   align-items: center;
 }
 
+#prize-reload-button {
+  position: absolute;
+  top: 30px;
+  margin: 30px;
+  width: 30px;
+  height: 30px;
+}
+
 #prize {
   /* border: 2px solid red; */
   text-align: center;
   padding: 1em;
   margin-bottom: 2em;
 }
+#prize-img {
+  width: 300px;
+}
 
 #price {
   border: 2px solid black;
+  background-color: bisque;
   border-radius: 5px;
   padding-left: 1em;
   padding-right: 1em;
