@@ -81,8 +81,8 @@ image {
 .exploding-controls {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-
+  justify-content: center;
+  gap: 20px;
   min-width: 20px;
 }
 

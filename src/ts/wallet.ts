@@ -142,9 +142,9 @@ class wallet implements wallet {
     const explodingControls = d3.selectAll(".exploding-controls");
 
     creationControls
-      .append("button")
+      .append("img")
+      .attr("src", new URL("../img/minus.png", import.meta.url).href)
       .attr("class", "substract-button")
-      .text("-")
       .on("click", (ev, d) => {
         const i = (d as walletItemsData).pocketIndex;
         this.removeCoin(i);
@@ -159,26 +159,26 @@ class wallet implements wallet {
       });
 
     creationControls
-      .append("button")
+      .append("img")
+      .attr("src", new URL("../img/plus.png", import.meta.url).href)
       .attr("class", "add-button")
-      .text("+")
       .on("click", (ev, d) => {
         const i = (d as walletItemsData).pocketIndex;
         this.addCoin(i);
       });
 
     explodingControls
-      .append("button")
+      .append("img")
+      .attr("src", new URL("../img/left.png", import.meta.url).href)
       .attr("class", "explode-button")
-      .text("⇦")
       .on("click", (ev, d) => {
         this.explode((d as walletItemsData).pocketIndex);
       });
 
     explodingControls
-      .append("button")
+      .append("img")
+      .attr("src", new URL("../img/right.png", import.meta.url).href)
       .attr("class", "unexplode-button")
-      .text("⇨")
       .on("click", (ev, d: any) =>
         this.unexplode((d as walletItemsData).pocketIndex + 1)
       );

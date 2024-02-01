@@ -61,7 +61,7 @@ const radixMenu = d3
 radixMenu
   .append("svg")
   .append("image")
-  .attr("href", new URL("../svg/coin.svg#svg1", import.meta.url).href);
+  .attr("href", new URL("../img/star.png", import.meta.url).href);
 
 radixMenu
   .append("ul")
