@@ -2,7 +2,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  /* float: left; */
+  margin: 10px;
 }
 
 #radix-menu svg {

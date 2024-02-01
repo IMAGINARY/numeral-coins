@@ -5,7 +5,7 @@ interface prizeData {
 
 export const prizes = [
   {
-    img: new URL("../img/diamond.png", import.meta.url).href,
+    img: new URL("../img/MonaLisa-faceless.svg.png", import.meta.url).href,
     price: 150,
   },
   {
