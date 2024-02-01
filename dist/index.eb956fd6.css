@@ -1,0 +1,57 @@
+#radix-menu {
+  margin: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#radix-menu svg {
+  width: 100px;
+  height: 150px;
+  margin: 10px;
+}
+
+#radix-menu image {
+  width: 100%;
+}
+
+.dropdown {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+
+.dropdown ul {
+  z-index: 1;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 5px;
+  transition: all .5s;
+  display: none;
+  position: absolute;
+  top: 35px;
+  right: -90px;
+}
+
+.dropdown:hover ul {
+  opacity: 1;
+  display: block;
+  transform: translateY(0);
+}
+
+.dropdown li {
+  color: #fff;
+  text-align: center;
+  background: #ffc232;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  padding: 10px;
+  text-decoration: none;
+  display: flex;
+}
+
+/*# sourceMappingURL=index.eb956fd6.css.map */

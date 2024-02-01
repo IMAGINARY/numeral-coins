@@ -1,0 +1,84 @@
+@font-face {
+  font-family: Fredoka;
+  src: url("Fredoka-Medium.46bd8f10.ttf");
+}
+
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  font-family: Fredoka;
+  font-size: 200%;
+}
+
+body:before {
+  content: "";
+  opacity: .3;
+  background-image: url("background.3289ddc3.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  inset: 0;
+}
+
+* {
+  touch-action: manipulation;
+}
+
+#config-opts {
+  align-items: center;
+  gap: 30px;
+  margin: 10px;
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#prize-reload-button {
+  cursor: pointer;
+  pointer-events: all;
+  width: 30px;
+  height: 30px;
+  margin: 30px;
+  position: absolute;
+  top: 30px;
+}
+
+#prize {
+  text-align: center;
+  pointer-events: none;
+  justify-content: center;
+  padding: 1em;
+  display: flex;
+}
+
+#prize-img {
+  text-align: center;
+  max-width: 300px;
+  max-height: 300px;
+}
+
+#price {
+  background-color: bisque;
+  border: 2px solid #000;
+  border-radius: 5px;
+  margin: auto;
+  padding: .5em 1em;
+}
+
+#results {
+  text-align: center;
+  height: 2em;
+  margin: 1em;
+}
+
+.radix-text {
+  color: brown;
+}
+
+.coefficient-text {
+  color: #027cb4;
+}
+
+/*# sourceMappingURL=index.c92073ef.css.map */
