@@ -1,7 +1,7 @@
 {
-  "name": "numbersystems",
+  "name": "numeralsystems",
   "version": "1.0.0",
-  "description": "An app about basis in number systems",
+  "description": "A playground app on numeral systems",
   "author": "Daniel Ramos",
   "license": "ISC",
   "dependencies": {
