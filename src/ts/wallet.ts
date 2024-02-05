@@ -27,6 +27,7 @@ class wallet implements wallet {
     this.createUI(document.getElementById("wallet-container") as HTMLElement);
     this.fillPocketsUI();
   }
+
   setPocket(index: number, x: number) {
     this.pockets[index] = x;
     this.fillPocketsUI();
@@ -54,16 +55,6 @@ class wallet implements wallet {
     // this.fillPocketsUI();
     this.explodeAnimation();
   }
-
-  // explodeAnimation(index: number) {
-  //   const nextPocket = d3.selectAll(".pocket").filter((d) => d == index + 1);
-  //   const currentCoinsNextPocket = nextPocket.select(".coin");
-  //   const numCurrentCoinsNextPocket = currentCoinsNextPocket.size();
-  //   const newCoin = currentCoinsNextPocket.append("div"); //.attr("class", "coin");
-  //   // .datum(numCurrentCoinsNextPocket);
-  //   // .style("visibility", "hidden");
-  //   console.log(numCurrentCoinsNextPocket, newCoin);
-  // }
 
   // unexplode: split points on index index into previous pocket
   unexplode(index: number) {
@@ -119,7 +110,7 @@ class wallet implements wallet {
         d.type === "pocket" ? "pocket" : "exploding-controls"
       );
 
-    // create structure on pockets
+    // Create structure on pockets
     const pockets = d3.selectAll(".pocket");
 
     const graphicPocketsContainer = pockets
@@ -141,32 +132,33 @@ class wallet implements wallet {
       .attr("class", "creation-controls");
     const explodingControls = d3.selectAll(".exploding-controls");
 
+    // Minus button
     creationControls
       .append("img")
       .attr("src", new URL("../img/minus.png", import.meta.url).href)
       .attr("class", "substract-button")
       .on("click", (ev, d) => {
-        const i = (d as walletItemsData).pocketIndex;
-        this.removeCoin(i);
+        this.removeCoin((d as walletItemsData).pocketIndex);
       });
 
-    const coinPic = creationControls
+    // Coin image with its face value
+    creationControls
       .append("div")
       .attr("class", "coin-value")
       .each((d, i, n) => {
-        const ind = (d as walletItemsData).pocketIndex;
         loadCoinArt(n[i], this.radix ** i);
       });
 
+    // Plus button
     creationControls
       .append("img")
       .attr("src", new URL("../img/plus.png", import.meta.url).href)
       .attr("class", "add-button")
       .on("click", (ev, d) => {
-        const i = (d as walletItemsData).pocketIndex;
-        this.addCoin(i);
+        this.addCoin((d as walletItemsData).pocketIndex);
       });
 
+    // Explode button
     explodingControls
       .append("img")
       .attr("src", new URL("../img/left.png", import.meta.url).href)
@@ -175,6 +167,7 @@ class wallet implements wallet {
         this.explode((d as walletItemsData).pocketIndex);
       });
 
+    // Unexplode button
     explodingControls
       .append("img")
       .attr("src", new URL("../img/right.png", import.meta.url).href)
@@ -183,9 +176,10 @@ class wallet implements wallet {
         this.unexplode((d as walletItemsData).pocketIndex + 1)
       );
 
+    // create container of coins being animated
     div.append("div").attr("id", "animation-container");
 
-    // Create current value display
+    // Create current total wallet value display
     d3.select("#walletValue-container")
       .append("span")
       .attr("id", "walletValue")
@@ -208,18 +202,14 @@ class wallet implements wallet {
 
     const coins = pockets
       .select(".graphic-pocket")
-      .selectAll("div")
+      .selectAll("img")
       .data((d, i) => d.map((v) => ({ pocketIndex: i, coinIndex: v })));
 
     coins
       .enter()
-      .append("div")
+      .append("img")
       .classed("coin", true)
-      .append("svg")
-      .attr("width", 15)
-      .attr("viewBox", "0 0 253 214")
-      .append("image")
-      .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
+      .attr("src", new URL("../svg/coin.svg#coin", import.meta.url).href);
 
     coins.exit().remove();
 
@@ -245,21 +235,15 @@ class wallet implements wallet {
 
     const coins = pockets
       .select(".graphic-pocket")
-      .selectAll("div")
+      .selectAll("img")
       .data((d, i) => d.map((v) => ({ pocketIndex: i, coinIndex: v })));
 
     const newCoin = coins
       .enter()
-      .append("div")
+      .append("img")
       .classed("coin", true)
+      .attr("src", new URL("../svg/coin.svg#coin", import.meta.url).href)
       .style("visibility", "hidden");
-
-    newCoin
-      .append("svg")
-      .attr("width", 15)
-      .attr("viewBox", "0 0 253 214")
-      .append("image")
-      .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
 
     const finalPosition = newCoin.node()?.getBoundingClientRect();
 
@@ -294,16 +278,6 @@ class wallet implements wallet {
         (d, i, n) =>
           (initialPositions.get(n[i] as HTMLElement) as DOMRect).top + "px"
       )
-      // .style(
-      //   "width",
-      //   (d, i, n) =>
-      //     (initialPositions.get(n[i] as HTMLElement) as DOMRect).width + "px"
-      // )
-      // .style(
-      //   "height",
-      //   (d, i, n) =>
-      //     (initialPositions.get(n[i] as HTMLElement) as DOMRect).height + "px"
-      // )
       .style("position", "fixed")
       .transition()
       .duration(1000)
@@ -343,23 +317,20 @@ class wallet implements wallet {
 
     const coins = pockets
       .select(".graphic-pocket")
-      .selectAll("div")
+      .selectAll("img")
       .data((d, i) => d.map((v) => ({ pocketIndex: i, coinIndex: v })));
 
-    const newCoins = coins.enter().append("div").classed("coin", true);
-
-    newCoins
-      .append("svg")
-      .attr("width", 15)
-      .attr("viewBox", "0 0 253 214")
-      .append("image")
-      .attr("href", new URL("../svg/coin.svg#coin", import.meta.url).href);
+    const newCoins = coins
+      .enter()
+      .append("img")
+      .classed("coin", true)
+      .attr("src", new URL("../svg/coin.svg#coin", import.meta.url).href);
 
     const vanishingCoin = coins.exit();
 
     const initialPosition = (
       vanishingCoin.node() as HTMLElement
-    ).getBoundingClientRect();
+    )?.getBoundingClientRect();
 
     vanishingCoin.remove();
 
@@ -381,8 +352,6 @@ class wallet implements wallet {
       .select("#animation-container")
       .selectAll(".choose")
       .classed("choose", false);
-
-    console.log(animatedCoins);
 
     // newCoins
     //   .remove()
