@@ -12,7 +12,7 @@ declare global {
 }
 
 let mode = "junior";
-let maxPrice = 200;
+let maxPrice = 400;
 
 window.price = 145;
 window.radix = 4;
@@ -25,14 +25,9 @@ function makeWallet() {
   document.getElementById("wallet")?.remove();
   document.getElementById("walletValue")?.remove();
 
-  // let radix = Math.max(
-  //   Number((document.getElementById("radix") as HTMLInputElement).value),
-  //   2
-  // );
-
   // calculate number of pockets
   let i = 0;
-  for (i = 0; window.radix ** i < maxPrice; i += 1) {}
+  for (i = 0; window.radix ** i - 1 < maxPrice; i += 1) {}
 
   window.W = new wallet(window.radix, i);
 }
