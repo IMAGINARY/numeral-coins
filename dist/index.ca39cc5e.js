@@ -585,21 +585,17 @@ var _walletDefault = parcelHelpers.interopDefault(_wallet);
 var _d3Selection = require("d3-selection");
 var _prizes = require("./prizes");
 let mode = "junior";
-let maxPrice = 200;
+let maxPrice = 400;
 window.price = 145;
 window.radix = 4;
 // let W: wallet;
 function makeWallet() {
     console.log("making wallet");
     document.getElementById("wallet")?.remove();
-    document.getElementById("walletValue")?.remove();
-    // let radix = Math.max(
-    //   Number((document.getElementById("radix") as HTMLInputElement).value),
-    //   2
-    // );
+    // document.getElementById("walletValue")?.remove();
     // calculate number of pockets
     let i = 0;
-    for(i = 0; window.radix ** i < maxPrice; i += 1);
+    for(i = 0; window.radix ** i - 1 < maxPrice; i += 1);
     window.W = new (0, _walletDefault.default)(window.radix, i);
 }
 function newPrize() {
@@ -610,34 +606,43 @@ function newPrize() {
 }
 function changeRadix(b) {
     window.radix = b;
+    _d3Selection.select("#radix-display").text(b.toString());
     makeWallet();
 }
-/* MAIN SETUP */ const radixOptions = [
+/* MAIN SETUP */ const menu = _d3Selection.select("#menu");
+// Create radix menu
+const radixOptions = [
     2,
     3,
     4,
     5,
     10
 ];
-const radixMenu = _d3Selection.select("#radix-menu").append("div").classed("dropdown", true);
-radixMenu.append("svg").append("image").attr("href", new URL(require("7a4cce533d7201d8")).href);
+const radixMenu = menu.append("div").attr("id", "radix-menu").classed("dropdown", true);
+radixMenu.append("img").attr("src", new URL(require("7a4cce533d7201d8")).href);
+radixMenu.append("span").attr("id", "radix-display").classed("radix-text", true).text(window.radix);
 radixMenu.append("ul").selectAll("li").data(radixOptions).enter().append("li").text((d)=>d).on("click", (ev, d)=>changeRadix(d));
-_d3Selection.select("#radix").on("change", makeWallet);
-const prizeDiv = _d3Selection.select("#prize").append("div").attr("id", "prize-img-container");
-prizeDiv.append("img").attr("id", "prize-img");
-prizeDiv.append("img").attr("src", new URL(require("e6c7046936c9d36e")).href).attr("id", "prize-reload-button").on("click", ()=>{
+// Create load prize button
+menu.append("div").append("img").attr("src", new URL(require("e6c7046936c9d36e")).href).attr("id", "prize-reload-button").on("click", ()=>{
     _d3Selection.select("#results").text("");
     newPrize();
     makeWallet();
 });
+// Create current total wallet value display
+const walletValue = menu.append("div").attr("id", "walletValue");
+walletValue.append("img").attr("src", new URL(require("78f4fc830cc21940")).href);
+walletValue.append("span").attr("id", "total");
+//
+const prizeDiv = _d3Selection.select("#central").append("div").attr("id", "prize");
+prizeDiv.append("img").attr("id", "prize-img");
 prizeDiv.append("div").attr("id", "price");
-_d3Selection.select("#prize").append("span").attr("id", "walletValue-container");
+_d3Selection.select("#central").append("div").attr("id", "results");
 makeWallet();
 newPrize();
 // window.W = W;
 window.d3 = _d3Selection; // console.log(window.W.pockets);
 
-},{"./wallet":"kh34X","d3-selection":"gn9gd","./prizes":"4TKh0","7a4cce533d7201d8":"gNWkO","e6c7046936c9d36e":"2sPWE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kh34X":[function(require,module,exports) {
+},{"./wallet":"kh34X","d3-selection":"gn9gd","./prizes":"4TKh0","7a4cce533d7201d8":"gNWkO","e6c7046936c9d36e":"2sPWE","78f4fc830cc21940":"2t12F","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kh34X":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _d3Selection = require("d3-selection");
@@ -674,8 +679,10 @@ class wallet {
         this.fillPocketsUI();
     }
     removeCoin(index) {
-        this.pockets[index] -= 1;
-        this.fillPocketsUI();
+        if (this.pockets[index] > 0) {
+            this.pockets[index] -= 1;
+            this.fillPocketsUI();
+        }
     }
     // explode: join points on index index into next pocket
     explode(index) {
@@ -687,15 +694,6 @@ class wallet {
         // this.fillPocketsUI();
         this.explodeAnimation();
     }
-    // explodeAnimation(index: number) {
-    //   const nextPocket = d3.selectAll(".pocket").filter((d) => d == index + 1);
-    //   const currentCoinsNextPocket = nextPocket.select(".coin");
-    //   const numCurrentCoinsNextPocket = currentCoinsNextPocket.size();
-    //   const newCoin = currentCoinsNextPocket.append("div"); //.attr("class", "coin");
-    //   // .datum(numCurrentCoinsNextPocket);
-    //   // .style("visibility", "hidden");
-    //   console.log(numCurrentCoinsNextPocket, newCoin);
-    // }
     // unexplode: split points on index index into previous pocket
     unexplode(index) {
         if (index >= this.pockets.length || index < 1) return;
@@ -728,45 +726,45 @@ class wallet {
         });
         // create items
         const items = div.selectAll("div").data(itemsList).enter().append("div").attr("class", (d)=>d.type === "pocket" ? "pocket" : "exploding-controls");
-        // create structure on pockets
+        // Create structure on pockets
         const pockets = d3.selectAll(".pocket");
         const graphicPocketsContainer = pockets.append("div").classed("graphic-pocket-container", true);
-        graphicPocketsContainer.append("svg").append("image").attr("href", new URL(require("7dc614961ebe5a6d")).href);
+        graphicPocketsContainer.append("img").attr("src", new URL(require("7dc614961ebe5a6d")).href);
         graphicPocketsContainer.append("div").attr("class", "graphic-pocket");
-        const numericPockets = pockets.append("div").attr("class", "numeric-pocket");
+        const numericPockets = pockets.append("div").attr("class", "numeric-pocket coefficient-text");
         const creationControls = pockets.append("div").attr("class", "creation-controls");
         const explodingControls = d3.selectAll(".exploding-controls");
+        // Minus button
         creationControls.append("img").attr("src", new URL(require("e30a67b527c74b49")).href).attr("class", "substract-button").on("click", (ev, d)=>{
-            const i = d.pocketIndex;
-            this.removeCoin(i);
+            this.removeCoin(d.pocketIndex);
         });
-        const coinPic = creationControls.append("div").attr("class", "coin-value").each((d, i, n)=>{
-            const ind = d.pocketIndex;
+        // Coin image with its face value
+        creationControls.append("div").attr("class", "coin-value").each((d, i, n)=>{
             loadCoinArt(n[i], this.radix ** i);
         });
+        // Plus button
         creationControls.append("img").attr("src", new URL(require("49dccdfed9b20631")).href).attr("class", "add-button").on("click", (ev, d)=>{
-            const i = d.pocketIndex;
-            this.addCoin(i);
+            this.addCoin(d.pocketIndex);
         });
+        // Explode button
         explodingControls.append("img").attr("src", new URL(require("aeac114dec6efef1")).href).attr("class", "explode-button").on("click", (ev, d)=>{
             this.explode(d.pocketIndex);
         });
+        // Unexplode button
         explodingControls.append("img").attr("src", new URL(require("50d34c00ab81c8fe")).href).attr("class", "unexplode-button").on("click", (ev, d)=>this.unexplode(d.pocketIndex + 1));
+        // create container of coins being animated
         div.append("div").attr("id", "animation-container");
-        // Create current value display
-        d3.select("#walletValue-container").append("span").attr("id", "walletValue").append("svg").append("image").attr("href", new URL(require("3df76b4a37a89f15")).href);
-        d3.select("#walletValue").append("span").attr("id", "total");
     }
     // fills pockets with coins according to this.pockets[]
     fillPocketsUI() {
         const coinsLists = this.pockets.map((d)=>new Array(d).fill(0).map((d, i)=>i));
         const pockets = d3.selectAll(".pocket").data(coinsLists);
         pockets.select(".numeric-pocket").text((d)=>d.length.toString());
-        const coins = pockets.select(".graphic-pocket").selectAll("div").data((d, i)=>d.map((v)=>({
+        const coins = pockets.select(".graphic-pocket").selectAll("img").data((d, i)=>d.map((v)=>({
                     pocketIndex: i,
                     coinIndex: v
                 })));
-        coins.enter().append("div").classed("coin", true).append("svg").attr("width", 15).attr("viewBox", "0 0 253 214").append("image").attr("href", new URL(require("54091741a0c9f50")).href);
+        coins.enter().append("img").classed("coin", true).attr("src", new URL(require("54091741a0c9f50")).href);
         coins.exit().remove();
         d3.select("#total").text(this.value());
         if (this.checkGoal()) {
@@ -778,29 +776,18 @@ class wallet {
         const coinsLists = this.pockets.map((d)=>new Array(d).fill(0).map((d, i)=>i));
         const pockets = d3.selectAll(".pocket").data(coinsLists);
         pockets.select(".numeric-pocket").text((d)=>d.length.toString());
-        const coins = pockets.select(".graphic-pocket").selectAll("div").data((d, i)=>d.map((v)=>({
+        const coins = pockets.select(".graphic-pocket").selectAll("img").data((d, i)=>d.map((v)=>({
                     pocketIndex: i,
                     coinIndex: v
                 })));
-        const newCoin = coins.enter().append("div").classed("coin", true).style("visibility", "hidden");
-        newCoin.append("svg").attr("width", 15).attr("viewBox", "0 0 253 214").append("image").attr("href", new URL(require("54091741a0c9f50")).href);
+        const newCoin = coins.enter().append("img").classed("coin", true).attr("src", new URL(require("54091741a0c9f50")).href).style("visibility", "hidden");
         const finalPosition = newCoin.node()?.getBoundingClientRect();
         const vanishingCoins = coins.exit();
         const initialPositions = d3.local();
         vanishingCoins.each((d, i, n)=>initialPositions.set(n[i], n[i].getBoundingClientRect()));
         vanishingCoins.remove().each((d, i, n)=>document.getElementById("animation-container")?.appendChild(n[i]));
-        vanishingCoins.style("left", (d, i, n)=>initialPositions.get(n[i]).left + "px").style("top", (d, i, n)=>initialPositions.get(n[i]).top + "px")// .style(
-        //   "width",
-        //   (d, i, n) =>
-        //     (initialPositions.get(n[i] as HTMLElement) as DOMRect).width + "px"
-        // )
-        // .style(
-        //   "height",
-        //   (d, i, n) =>
-        //     (initialPositions.get(n[i] as HTMLElement) as DOMRect).height + "px"
-        // )
-        .style("position", "fixed").transition().duration(1000).style("left", finalPosition?.left + "px").style("top", finalPosition?.top + "px").remove().end().then(()=>{
-            console.log("finished");
+        vanishingCoins.style("left", (d, i, n)=>initialPositions.get(n[i]).left + "px").style("top", (d, i, n)=>initialPositions.get(n[i]).top + "px").style("position", "fixed").transition().duration(1000).style("left", finalPosition?.left + "px").style("top", finalPosition?.top + "px").remove().end().then(()=>{
+            // console.log("finished");
             newCoin.style("visibility", "visible");
         }).catch(()=>{
             console.log("catched");
@@ -817,14 +804,13 @@ class wallet {
         const coinsLists = this.pockets.map((d)=>new Array(d).fill(0).map((d, i)=>i));
         const pockets = d3.selectAll(".pocket").data(coinsLists);
         pockets.select(".numeric-pocket").text((d)=>d.length.toString());
-        const coins = pockets.select(".graphic-pocket").selectAll("div").data((d, i)=>d.map((v)=>({
+        const coins = pockets.select(".graphic-pocket").selectAll("img").data((d, i)=>d.map((v)=>({
                     pocketIndex: i,
                     coinIndex: v
                 })));
-        const newCoins = coins.enter().append("div").classed("coin", true);
-        newCoins.append("svg").attr("width", 15).attr("viewBox", "0 0 253 214").append("image").attr("href", new URL(require("54091741a0c9f50")).href);
+        const newCoins = coins.enter().append("img").classed("coin", true).attr("src", new URL(require("54091741a0c9f50")).href);
         const vanishingCoin = coins.exit();
-        const initialPosition = vanishingCoin.node().getBoundingClientRect();
+        const initialPosition = vanishingCoin.node()?.getBoundingClientRect();
         vanishingCoin.remove();
         const finalPositions = d3.local();
         newCoins.each((d, i, n)=>{
@@ -835,7 +821,6 @@ class wallet {
         });
         newCoins.style("visibility", "hidden");
         const animatedCoins = d3.select("#animation-container").selectAll(".choose").classed("choose", false);
-        console.log(animatedCoins);
         // newCoins
         //   .remove()
         //   .each(
@@ -845,7 +830,7 @@ class wallet {
         //         ?.appendChild(n[i] as HTMLElement)
         //   );
         animatedCoins.style("left", (d, i, n)=>initialPosition.left + "px").style("top", (d, i, n)=>initialPosition.top + "px").style("width", (d, i, n)=>initialPosition.width + "px").style("height", (d, i, n)=>initialPosition.height + "px").style("position", "fixed").transition().duration(1000).style("left", (d, i, n)=>finalPositions.get(n[i]).left + "px").style("top", (d, i, n)=>finalPositions.get(n[i]).top + "px").remove().end().then(()=>{
-            console.log("finished");
+            // console.log("finished");
             newCoins.attr("style", null);
         }).catch(()=>{
             console.log("catched");
@@ -875,17 +860,42 @@ class wallet {
     }
     decompositionFound() {
         console.log("Decomposition found");
-        const monomials = this.pockets.map((v, i)=>v ? `<span class="coefficient-text">${v.toString()}</span>
-           \xd7 <span class="radix-text">${this.radix}</span><sup>${i}</sup>` : ``).filter((n)=>n);
-        const message = `${this.value()} = ` + monomials.reverse().join(" + ");
+        const message = `<table>
+      <tr><td>${this.resultMessageValues()}</td></tr>
+      <tr><td>${this.resultMessagePowers()}</td></tr>
+      <tr><td>${this.resultMessageBase()}</td></tr>
+      </table>`;
         if (this.value()) d3.select("#results").html(message);
         d3.selectAll(".explode-button").classed("disabled", true);
         d3.selectAll(".unexplode-button").classed("disabled", true);
     }
+    resultMessagePowers() {
+        //Message: decomposition as sums of powers
+        const monomials = this.pockets.map((v, i)=>v ? `<span class="coefficient-text">${v.toString()}</span>
+           \xd7 <span class="radix-text">${this.radix}</span><sup>${i}</sup>` : ``).filter((n)=>n);
+        return `${this.value()} = ${monomials.reverse().join(" + ")}`;
+    }
+    resultMessageValues() {
+        // Message: decomposition as sums of coin values
+        const monomials = this.pockets.map((v, i)=>v ? `<span class="coefficient-text">${v.toString()}</span>
+         \xd7 <span>${this.radix ** i}</span>` : ``).filter((n)=>n);
+        return `${this.value()} = ${monomials.reverse().join(" + ")}`;
+    }
+    resultMessageBase() {
+        // Message: representation in base (radix)
+        const arr = [
+            ...this.pockets
+        ];
+        while(arr[arr.length - 1] === 0)// While the last element is a 0,
+        arr.pop(); // Remove that last element
+        const monomials = arr.map((v, i)=>`<span class="coefficient-text">${v.toString()}</span>`);
+        return `${this.value()}<sub>(10)</sub> = 
+     ${monomials.reverse().join(" ")}<sub>(${this.radix})</sub>`;
+    }
 }
 exports.default = wallet;
 
-},{"d3-selection":"gn9gd","d3-transition":"4lorl","d3-fetch":"jvQ3c","79b1ae6d2b019b9b":"g3trs","7dc614961ebe5a6d":"41n9L","e30a67b527c74b49":"2cGd6","49dccdfed9b20631":"kemYm","aeac114dec6efef1":"heaRa","50d34c00ab81c8fe":"kXIYp","3df76b4a37a89f15":"2t12F","54091741a0c9f50":"9Ha6M","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gn9gd":[function(require,module,exports) {
+},{"d3-selection":"gn9gd","d3-transition":"4lorl","d3-fetch":"jvQ3c","79b1ae6d2b019b9b":"g3trs","7dc614961ebe5a6d":"41n9L","e30a67b527c74b49":"2cGd6","49dccdfed9b20631":"kemYm","aeac114dec6efef1":"heaRa","50d34c00ab81c8fe":"kXIYp","54091741a0c9f50":"9Ha6M","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gn9gd":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "create", ()=>(0, _createJsDefault.default));
@@ -4059,10 +4069,7 @@ module.exports = require("9048ed87acb6bdd4").getBundleURL("1e3qO") + "left.5cb09
 },{"9048ed87acb6bdd4":"lgJ39"}],"kXIYp":[function(require,module,exports) {
 module.exports = require("1468b79ca4878382").getBundleURL("1e3qO") + "right.99fba6bb.png" + "?" + Date.now();
 
-},{"1468b79ca4878382":"lgJ39"}],"2t12F":[function(require,module,exports) {
-module.exports = require("6276ba2e8bddb20b").getBundleURL("1e3qO") + "3bags.8c9e9689.svg" + "?" + Date.now();
-
-},{"6276ba2e8bddb20b":"lgJ39"}],"9Ha6M":[function(require,module,exports) {
+},{"1468b79ca4878382":"lgJ39"}],"9Ha6M":[function(require,module,exports) {
 module.exports = require("445289083160dda1").getBundleURL("1e3qO") + "coin.4c902f33.svg" + "?" + Date.now();
 
 },{"445289083160dda1":"lgJ39"}],"4TKh0":[function(require,module,exports) {
@@ -4072,34 +4079,106 @@ parcelHelpers.export(exports, "prizes", ()=>prizes);
 const prizes = [
     {
         img: new URL(require("8bdb8956d5c59cc7")).href,
-        price: 150
+        price: 395
     },
     {
         img: new URL(require("63322bfd081e8976")).href,
-        price: 30
+        price: 361
     },
     {
-        img: new URL(require("63322bfd081e8976")).href,
-        price: 87
+        img: new URL(require("90bd51215f9add78")).href,
+        price: 293
     },
     {
-        img: new URL(require("63322bfd081e8976")).href,
-        price: 49
+        img: new URL(require("5b612237b288abab")).href,
+        price: 17
+    },
+    {
+        img: new URL(require("e783b48f7dcbc10c")).href,
+        price: 187
+    },
+    {
+        img: new URL(require("3d30357b04f3ca23")).href,
+        price: 262
+    },
+    {
+        img: new URL(require("642541307cfa3f39")).href,
+        price: 375
+    },
+    {
+        img: new URL(require("8f1d4d7c84300c4d")).href,
+        price: 86
+    },
+    {
+        img: new URL(require("7bffa4d0a83ed4f3")).href,
+        price: 291
+    },
+    {
+        img: new URL(require("32fc3ba4da69e26c")).href,
+        price: 104
+    },
+    {
+        img: new URL(require("148b2c5eef7a51fa")).href,
+        price: 65
+    },
+    {
+        img: new URL(require("cbc0efd0ba30dfa8")).href,
+        price: 203
+    },
+    {
+        img: new URL(require("aeea4ccc3d451e3e")).href,
+        price: 172
     }
 ];
 
-},{"8bdb8956d5c59cc7":"wkxO2","63322bfd081e8976":"7kCtN","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"wkxO2":[function(require,module,exports) {
+},{"8bdb8956d5c59cc7":"wkxO2","63322bfd081e8976":"7kCtN","90bd51215f9add78":"cCRJy","5b612237b288abab":"askHS","e783b48f7dcbc10c":"igv4u","3d30357b04f3ca23":"PcL9y","642541307cfa3f39":"db6iA","8f1d4d7c84300c4d":"eah81","7bffa4d0a83ed4f3":"Mne8N","32fc3ba4da69e26c":"kAYO9","148b2c5eef7a51fa":"1HCBh","cbc0efd0ba30dfa8":"gNfV5","aeea4ccc3d451e3e":"jlofO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"wkxO2":[function(require,module,exports) {
 module.exports = require("fb928f6ce4f5749b").getBundleURL("1e3qO") + "MonaLisa-faceless.svg.1e0930fa.png" + "?" + Date.now();
 
 },{"fb928f6ce4f5749b":"lgJ39"}],"7kCtN":[function(require,module,exports) {
 module.exports = require("52e73c97b01829f").getBundleURL("1e3qO") + "diamond.16b28a5d.png" + "?" + Date.now();
 
-},{"52e73c97b01829f":"lgJ39"}],"gNWkO":[function(require,module,exports) {
+},{"52e73c97b01829f":"lgJ39"}],"cCRJy":[function(require,module,exports) {
+module.exports = require("e5ea0967bdcec94b").getBundleURL("1e3qO") + "clock.96a4bee3.png" + "?" + Date.now();
+
+},{"e5ea0967bdcec94b":"lgJ39"}],"askHS":[function(require,module,exports) {
+module.exports = require("16bd6e4fb4a7ea4f").getBundleURL("1e3qO") + "dishes.b6300dd7.png" + "?" + Date.now();
+
+},{"16bd6e4fb4a7ea4f":"lgJ39"}],"igv4u":[function(require,module,exports) {
+module.exports = require("cd90aa2d382c5ed4").getBundleURL("1e3qO") + "furniture.d6574128.png" + "?" + Date.now();
+
+},{"cd90aa2d382c5ed4":"lgJ39"}],"PcL9y":[function(require,module,exports) {
+module.exports = require("cd309c0927330445").getBundleURL("1e3qO") + "lute.5e513b7e.png" + "?" + Date.now();
+
+},{"cd309c0927330445":"lgJ39"}],"db6iA":[function(require,module,exports) {
+module.exports = require("e1ad78dbe6615f8e").getBundleURL("1e3qO") + "mirror.0d5dbdc4.png" + "?" + Date.now();
+
+},{"e1ad78dbe6615f8e":"lgJ39"}],"eah81":[function(require,module,exports) {
+module.exports = require("c9859e2114b8a8bb").getBundleURL("1e3qO") + "teapot.8bbcf011.png" + "?" + Date.now();
+
+},{"c9859e2114b8a8bb":"lgJ39"}],"Mne8N":[function(require,module,exports) {
+module.exports = require("c106e9deadb9f5a6").getBundleURL("1e3qO") + "vase1.48a9881d.png" + "?" + Date.now();
+
+},{"c106e9deadb9f5a6":"lgJ39"}],"kAYO9":[function(require,module,exports) {
+module.exports = require("4a13f77a8f7850a7").getBundleURL("1e3qO") + "vase2.10966840.png" + "?" + Date.now();
+
+},{"4a13f77a8f7850a7":"lgJ39"}],"1HCBh":[function(require,module,exports) {
+module.exports = require("7e2641817745e28f").getBundleURL("1e3qO") + "vase3.7a6eea59.png" + "?" + Date.now();
+
+},{"7e2641817745e28f":"lgJ39"}],"gNfV5":[function(require,module,exports) {
+module.exports = require("5d2be4418745f7b").getBundleURL("1e3qO") + "vase4.6fbf87d3.png" + "?" + Date.now();
+
+},{"5d2be4418745f7b":"lgJ39"}],"jlofO":[function(require,module,exports) {
+module.exports = require("4632bb5ad41ddd38").getBundleURL("1e3qO") + "vase5.47a188a6.png" + "?" + Date.now();
+
+},{"4632bb5ad41ddd38":"lgJ39"}],"gNWkO":[function(require,module,exports) {
 module.exports = require("8ce815bc539c10da").getBundleURL("1e3qO") + "star.f0695dfc.png" + "?" + Date.now();
 
 },{"8ce815bc539c10da":"lgJ39"}],"2sPWE":[function(require,module,exports) {
 module.exports = require("a5586c0da40d40f9").getBundleURL("1e3qO") + "reload.8bc09da1.png" + "?" + Date.now();
 
-},{"a5586c0da40d40f9":"lgJ39"}]},["bMKAI","4j3ZX"], "4j3ZX", "parcelRequire408e")
+},{"a5586c0da40d40f9":"lgJ39"}],"2t12F":[function(require,module,exports) {
+module.exports = require("6276ba2e8bddb20b").getBundleURL("1e3qO") + "3bags.8c9e9689.svg" + "?" + Date.now();
+
+},{"6276ba2e8bddb20b":"lgJ39"}]},["bMKAI","4j3ZX"], "4j3ZX", "parcelRequire408e")
 
 //# sourceMappingURL=index.ca39cc5e.js.map

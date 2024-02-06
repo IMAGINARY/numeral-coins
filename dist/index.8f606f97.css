@@ -1,0 +1,69 @@
+.explode-button {
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+}
+
+.explode-button.disabled {
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.unexplode-button {
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+}
+
+.unexplode-button.disabled {
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.coin-value {
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 60px;
+  height: 60px;
+}
+
+.add-button {
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+}
+
+.add-button.disabled {
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.substract-button {
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+}
+
+.substract-button.disabled {
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+/*# sourceMappingURL=index.8f606f97.css.map */

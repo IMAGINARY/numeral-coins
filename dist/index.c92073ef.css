@@ -35,20 +35,12 @@ body:before {
   right: 0;
 }
 
-#prize-reload-button {
-  cursor: pointer;
-  pointer-events: all;
-  width: 30px;
-  height: 30px;
-  margin: 30px;
-  position: absolute;
-  top: 30px;
-}
-
-#prize {
+#central {
   text-align: center;
   pointer-events: none;
   justify-content: center;
+  align-items: center;
+  gap: 70px;
   padding: 1em;
   display: flex;
 }
@@ -68,9 +60,14 @@ body:before {
 }
 
 #results {
-  text-align: center;
-  height: 2em;
-  margin: 1em;
+  height: 5em;
+  margin: .2em;
+  position: relative;
+}
+
+#results table {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .radix-text {
