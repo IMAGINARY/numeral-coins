@@ -91,14 +91,13 @@ walletValue
 walletValue.append("span").attr("id", "total");
 
 //
-const prizeDiv = d3
-  .select("#prize")
-  .append("div")
-  .attr("id", "prize-img-container");
+const prizeDiv = d3.select("#central").append("div").attr("id", "prize");
 
 prizeDiv.append("img").attr("id", "prize-img");
 
 prizeDiv.append("div").attr("id", "price");
+
+d3.select("#central").append("div").attr("id", "results");
 
 makeWallet();
 newPrize();

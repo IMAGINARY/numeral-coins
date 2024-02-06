@@ -52,13 +52,15 @@ body::before {
   pointer-events: all;
 } */
 
-#prize {
+#central {
   /* border: 2px solid red; */
   text-align: center;
   padding: 1em;
   display: flex;
+  align-items: center;
   justify-content: center;
   pointer-events: none;
+  gap: 70px;
 }
 #prize-img {
   max-width: 300px;
