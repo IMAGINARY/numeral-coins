@@ -42,18 +42,7 @@ body::before {
   margin: 10px;
 }
 
-/* #prize-reload-button {
-  position: absolute;
-  top: 30px;
-  margin: 30px;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  pointer-events: all;
-} */
-
 #central {
-  /* border: 2px solid red; */
   text-align: center;
   padding: 1em;
   display: flex;

@@ -42,6 +42,7 @@ function newPrize() {
 
 function changeRadix(b: number) {
   window.radix = b;
+  d3.select("#radix-display").text(b.toString());
   makeWallet();
 }
 
@@ -59,6 +60,12 @@ const radixMenu = menu
 radixMenu
   .append("img")
   .attr("src", new URL("../img/star.png", import.meta.url).href);
+
+radixMenu
+  .append("span")
+  .attr("id", "radix-display")
+  .classed("radix-text", true)
+  .text(window.radix);
 
 radixMenu
   .append("ul")
@@ -94,7 +101,6 @@ walletValue.append("span").attr("id", "total");
 const prizeDiv = d3.select("#central").append("div").attr("id", "prize");
 
 prizeDiv.append("img").attr("id", "prize-img");
-
 prizeDiv.append("div").attr("id", "price");
 
 d3.select("#central").append("div").attr("id", "results");
