@@ -42,7 +42,7 @@ body::before {
   margin: 10px;
 }
 
-#prize-reload-button {
+/* #prize-reload-button {
   position: absolute;
   top: 30px;
   margin: 30px;
@@ -50,7 +50,7 @@ body::before {
   height: 30px;
   cursor: pointer;
   pointer-events: all;
-}
+} */
 
 #prize {
   /* border: 2px solid red; */

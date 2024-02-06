@@ -23,7 +23,7 @@ function makeWallet() {
   console.log("making wallet");
 
   document.getElementById("wallet")?.remove();
-  document.getElementById("walletValue")?.remove();
+  // document.getElementById("walletValue")?.remove();
 
   // calculate number of pockets
   let i = 0;
@@ -47,16 +47,18 @@ function changeRadix(b: number) {
 
 /* MAIN SETUP */
 
+const menu = d3.select("#menu");
+
+// Create radix menu
 const radixOptions = [2, 3, 4, 5, 10];
-const radixMenu = d3
-  .select("#radix-menu")
+const radixMenu = menu
   .append("div")
+  .attr("id", "radix-menu")
   .classed("dropdown", true);
 
 radixMenu
-  .append("svg")
-  .append("image")
-  .attr("href", new URL("../img/star.png", import.meta.url).href);
+  .append("img")
+  .attr("src", new URL("../img/star.png", import.meta.url).href);
 
 radixMenu
   .append("ul")
@@ -67,16 +69,9 @@ radixMenu
   .text((d) => d)
   .on("click", (ev, d) => changeRadix(d));
 
-d3.select("#radix").on("change", makeWallet);
-
-const prizeDiv = d3
-  .select("#prize")
+// Create load prize button
+menu
   .append("div")
-  .attr("id", "prize-img-container");
-
-prizeDiv.append("img").attr("id", "prize-img");
-
-prizeDiv
   .append("img")
   .attr("src", new URL("../img/reload.png", import.meta.url).href)
   .attr("id", "prize-reload-button")
@@ -86,9 +81,24 @@ prizeDiv
     makeWallet();
   });
 
-prizeDiv.append("div").attr("id", "price");
+// Create current total wallet value display
+const walletValue = menu.append("div").attr("id", "walletValue");
 
-d3.select("#prize").append("span").attr("id", "walletValue-container");
+walletValue
+  .append("img")
+  .attr("src", new URL("../svg/3bags.svg#svg1", import.meta.url).href);
+
+walletValue.append("span").attr("id", "total");
+
+//
+const prizeDiv = d3
+  .select("#prize")
+  .append("div")
+  .attr("id", "prize-img-container");
+
+prizeDiv.append("img").attr("id", "prize-img");
+
+prizeDiv.append("div").attr("id", "price");
 
 makeWallet();
 newPrize();

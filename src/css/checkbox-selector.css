@@ -1,9 +1,3 @@
-#senior-mode-ckb {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .checkbox-wrapper-49 input[type="checkbox"] {
   display: none;
   visibility: hidden;

@@ -1,20 +1,3 @@
-#radix-menu {
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin: 10px;
-}
-
-#radix-menu svg {
-  width: 100px;
-  height: 150px;
-  margin: 10px;
-}
-
-#radix-menu image {
-  width: 100%;
-}
-
 .dropdown {
   position: relative;
   display: inline-block;
