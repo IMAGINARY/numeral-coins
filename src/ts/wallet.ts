@@ -126,7 +126,7 @@ class wallet implements wallet {
 
     const numericPockets = pockets
       .append("div")
-      .attr("class", "numeric-pocket");
+      .attr("class", "numeric-pocket coefficient-text");
     const creationControls = pockets
       .append("div")
       .attr("class", "creation-controls");
@@ -286,7 +286,7 @@ class wallet implements wallet {
       .remove()
       .end()
       .then(() => {
-        console.log("finished");
+        // console.log("finished");
         newCoin.style("visibility", "visible");
       })
       .catch(() => {
@@ -383,7 +383,7 @@ class wallet implements wallet {
       .remove()
       .end()
       .then(() => {
-        console.log("finished");
+        // console.log("finished");
         newCoins.attr("style", null);
       })
       .catch(() => {
@@ -429,6 +429,21 @@ class wallet implements wallet {
   decompositionFound() {
     console.log("Decomposition found");
 
+    const message = `<table>
+      <tr><td>${this.resultMessageValues()}</td></tr>
+      <tr><td>${this.resultMessagePowers()}</td></tr>
+      <tr><td>${this.resultMessageBase()}</td></tr>
+      </table>`;
+
+    if (this.value()) {
+      d3.select("#results").html(message);
+    }
+    d3.selectAll(".explode-button").classed("disabled", true);
+    d3.selectAll(".unexplode-button").classed("disabled", true);
+  }
+
+  resultMessagePowers() {
+    //Message: decomposition as sums of powers
     const monomials = this.pockets
       .map((v, i) =>
         v
@@ -438,13 +453,37 @@ class wallet implements wallet {
       )
       .filter((n) => n);
 
-    const message = `${this.value()} = ` + monomials.reverse().join(" + ");
+    return `${this.value()} = ${monomials.reverse().join(" + ")}`;
+  }
 
-    if (this.value()) {
-      d3.select("#results").html(message);
+  resultMessageValues() {
+    // Message: decomposition as sums of coin values
+    const monomials = this.pockets
+      .map((v, i) =>
+        v
+          ? `<span class="coefficient-text">${v.toString()}</span>
+         × <span>${this.radix ** i}</span>`
+          : ``
+      )
+      .filter((n) => n);
+
+    return `${this.value()} = ${monomials.reverse().join(" + ")}`;
+  }
+
+  resultMessageBase() {
+    // Message: representation in base (radix)
+    const arr = [...this.pockets];
+    while (arr[arr.length - 1] === 0) {
+      // While the last element is a 0,
+      arr.pop(); // Remove that last element
     }
-    d3.selectAll(".explode-button").classed("disabled", true);
-    d3.selectAll(".unexplode-button").classed("disabled", true);
+
+    const monomials = arr.map(
+      (v, i) => `<span class="coefficient-text">${v.toString()}</span>`
+    );
+
+    return `${this.value()}<sub>(10)</sub> = 
+     ${monomials.reverse().join(" ")}<sub>(${this.radix})</sub>`;
   }
 }
 
