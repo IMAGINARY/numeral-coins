@@ -120,9 +120,8 @@ class wallet implements wallet {
       .classed("graphic-pocket-container", true);
 
     graphicPocketsContainer
-      .append("svg")
-      .append("image")
-      .attr("href", new URL("../svg/bag.svg#svg1", import.meta.url).href);
+      .append("img")
+      .attr("src", new URL("../svg/bag.svg#svg1", import.meta.url).href);
 
     graphicPocketsContainer.append("div").attr("class", "graphic-pocket");
 
