@@ -39,8 +39,10 @@ class wallet implements wallet {
   }
 
   removeCoin(index: number) {
-    this.pockets[index] -= 1;
-    this.fillPocketsUI();
+    if (this.pockets[index] > 0) {
+      this.pockets[index] -= 1;
+      this.fillPocketsUI();
+    }
   }
 
   // explode: join points on index index into next pocket
