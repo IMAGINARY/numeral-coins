@@ -49,6 +49,39 @@ function changeRadix(b: number) {
 
 /* MAIN SETUP */
 
+// <div id="senior-mode-ckb">
+// Junior
+// <span class="checkbox-wrapper-49">
+//   <div class="block">
+//     <input data-index="0" id="cheap-49" type="checkbox" />
+//     <label for="cheap-49"></label>
+//   </div>
+// </span>
+// Senior
+// </div>
+// <!-- <div>ⓘ</div> -->
+
+// Create Senior mode selector
+const seniorSelector = d3
+  .select("#config-opts")
+  .append("div")
+  .attr("id", "senior-mode-ckb");
+
+seniorSelector
+  .append("img")
+  .attr("src", new URL("../img/mag-glass.png", import.meta.url).href);
+
+seniorSelector.append("span").classed("checkbox-wrapper-49", true).html(`
+  <div class="block">
+    <input data-index="0" id="cheap-49" type="checkbox" />
+    <label for="cheap-49"></label>
+  </div>
+`);
+
+seniorSelector
+  .append("img")
+  .attr("src", new URL("../img/microscope.png", import.meta.url).href);
+
 // Create infoMenu
 
 const infoMenu = d3
