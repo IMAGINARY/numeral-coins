@@ -1,6 +1,7 @@
 import wallet from "./wallet";
 import * as d3 from "d3-selection";
 import { prizes } from "./prizes";
+import { createTextModal } from "./ui-functions";
 
 declare global {
   interface Window {
@@ -47,6 +48,14 @@ function changeRadix(b: number) {
 }
 
 /* MAIN SETUP */
+
+d3.select("#config-opts").append(() =>
+  createTextModal(
+    "about",
+    "About",
+    new URL("../txt/prints.html", import.meta.url)
+  )
+);
 
 const menu = d3.select("#menu");
 
