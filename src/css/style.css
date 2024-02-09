@@ -50,14 +50,18 @@ body::before {
   touch-action: manipulation;
 }
 
-#config-opts {
-  position: absolute;
-  right: 0;
-  top: 0;
-  display: flex;
-  gap: 30px;
-  align-items: center;
-  margin: 10px;
+#radix-menu.dropdown li {
+  background: #ffc232;
+  color: #fff;
+  padding: 20px;
+}
+
+#info-menu.dropdown li {
+  background: #aaaaaa;
+  /* color: #fff; */
+  &span {
+    display: block;
+  }
 }
 
 #central {

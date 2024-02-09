@@ -49,22 +49,55 @@ function changeRadix(b: number) {
 
 /* MAIN SETUP */
 
-d3.select("#config-opts").append(() =>
-  createTextModal(
-    "about",
-    "About",
-    new URL("../txt/prints.html", import.meta.url)
-  )
-);
+// Create infoMenu
+
+const infoMenu = d3
+  .select("#config-opts")
+  .append("div")
+  .attr("id", "info-menu")
+  .classed("dropdown", true)
+  .classed("dropdown-left", true);
+
+infoMenu
+  .append("img")
+  .attr("src", new URL("../img/info.png", import.meta.url).href);
+
+const infoMenuOptions = [
+  {
+    id: "intro",
+    title: "Introduction",
+    textUrl: new URL("../txt/intro.html", import.meta.url),
+  },
+  {
+    id: "prints",
+    title: "3D prints",
+    textUrl: new URL("../txt/prints.html", import.meta.url),
+  },
+  {
+    id: "about",
+    title: "About",
+    textUrl: new URL("../txt/about.html", import.meta.url),
+  },
+];
+
+infoMenu
+  .append("ul")
+  .selectAll("li")
+  .data(infoMenuOptions)
+  .enter()
+  .append("li")
+  .append((d) => createTextModal(d.id, d.title, d.textUrl));
+
+// Create radix menu
 
 const menu = d3.select("#menu");
 
-// Create radix menu
 const radixOptions = [2, 3, 4, 5, 10];
 const radixMenu = menu
   .append("div")
   .attr("id", "radix-menu")
-  .classed("dropdown", true);
+  .classed("dropdown", true)
+  .classed("dropdown-right", true);
 
 radixMenu
   .append("img")
