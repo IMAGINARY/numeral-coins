@@ -9,6 +9,7 @@ declare global {
     d3: typeof d3;
     price: number;
     radix: number;
+    seniorMode: boolean;
   }
 }
 
@@ -17,6 +18,7 @@ let maxPrice = 400;
 
 window.price = 145;
 window.radix = 4;
+window.seniorMode = false;
 
 // let W: wallet;
 
@@ -81,6 +83,15 @@ seniorSelector.append("span").classed("checkbox-wrapper-49", true).html(`
 seniorSelector
   .append("img")
   .attr("src", new URL("../img/microscope.png", import.meta.url).href);
+
+d3.select("#cheap-49").on("change", () => {
+  window.seniorMode = d3.select("#cheap-49").property("checked");
+  if (window.W.checkGoal() && window.W.checkDecomposed()) {
+    window.W.decompositionFound();
+  }
+  // makeWallet();
+  // newPrize();
+});
 
 // Create infoMenu
 

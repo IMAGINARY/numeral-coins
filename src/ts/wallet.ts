@@ -420,11 +420,15 @@ class wallet implements wallet {
   decompositionFound() {
     console.log("Decomposition found");
 
-    const message = `<table>
-      <tr><td>${this.resultMessageValues()}</td></tr>
-      <tr><td>${this.resultMessagePowers()}</td></tr>
-      <tr><td>${this.resultMessageBase()}</td></tr>
-      </table>`;
+    let message = `<table>
+      <tr><td>${this.resultMessageValues()}</td></tr>`;
+
+    if (window.seniorMode) {
+      message += `
+        <tr><td>${this.resultMessagePowers()}</td></tr>
+        <tr><td>${this.resultMessageBase()}</td></tr>`;
+    }
+    message += `</table>`;
 
     if (this.value()) {
       d3.select("#results").html(message);
