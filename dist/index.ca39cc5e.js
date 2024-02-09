@@ -584,10 +584,12 @@ var _wallet = require("./wallet");
 var _walletDefault = parcelHelpers.interopDefault(_wallet);
 var _d3Selection = require("d3-selection");
 var _prizes = require("./prizes");
+var _uiFunctions = require("./ui-functions");
 let mode = "junior";
 let maxPrice = 400;
 window.price = 145;
 window.radix = 4;
+window.seniorMode = false;
 // let W: wallet;
 function makeWallet() {
     console.log("making wallet");
@@ -609,8 +611,56 @@ function changeRadix(b) {
     _d3Selection.select("#radix-display").text(b.toString());
     makeWallet();
 }
-/* MAIN SETUP */ const menu = _d3Selection.select("#menu");
+/* MAIN SETUP */ // <div id="senior-mode-ckb">
+// Junior
+// <span class="checkbox-wrapper-49">
+//   <div class="block">
+//     <input data-index="0" id="cheap-49" type="checkbox" />
+//     <label for="cheap-49"></label>
+//   </div>
+// </span>
+// Senior
+// </div>
+// <!-- <div>ⓘ</div> -->
+// Create Senior mode selector
+const seniorSelector = _d3Selection.select("#config-opts").append("div").attr("id", "senior-mode-ckb");
+seniorSelector.append("img").attr("src", new URL(require("20109f0245a30464")).href);
+seniorSelector.append("span").classed("checkbox-wrapper-49", true).html(`
+  <div class="block">
+    <input data-index="0" id="cheap-49" type="checkbox" />
+    <label for="cheap-49"></label>
+  </div>
+`);
+seniorSelector.append("img").attr("src", new URL(require("e3cf0f7ffe5201be")).href);
+_d3Selection.select("#cheap-49").on("change", ()=>{
+    window.seniorMode = _d3Selection.select("#cheap-49").property("checked");
+    if (window.W.checkGoal() && window.W.checkDecomposed()) window.W.decompositionFound();
+// makeWallet();
+// newPrize();
+});
+// Create infoMenu
+const infoMenu = _d3Selection.select("#config-opts").append("div").attr("id", "info-menu").classed("dropdown", true).classed("dropdown-left", true);
+infoMenu.append("img").attr("src", new URL(require("8f5e2f6ff4ff5a29")).href);
+const infoMenuOptions = [
+    {
+        id: "intro",
+        title: "Introduction",
+        textUrl: new URL(require("733d29b46e513ec5"))
+    },
+    {
+        id: "prints",
+        title: "3D prints",
+        textUrl: new URL(require("57811a87b980e150"))
+    },
+    {
+        id: "about",
+        title: "About",
+        textUrl: new URL(require("3b964e2605a88024"))
+    }
+];
+infoMenu.append("ul").selectAll("li").data(infoMenuOptions).enter().append("li").append((d)=>(0, _uiFunctions.createTextModal)(d.id, d.title, d.textUrl));
 // Create radix menu
+const menu = _d3Selection.select("#menu");
 const radixOptions = [
     2,
     3,
@@ -618,7 +668,7 @@ const radixOptions = [
     5,
     10
 ];
-const radixMenu = menu.append("div").attr("id", "radix-menu").classed("dropdown", true);
+const radixMenu = menu.append("div").attr("id", "radix-menu").classed("dropdown", true).classed("dropdown-right", true);
 radixMenu.append("img").attr("src", new URL(require("7a4cce533d7201d8")).href);
 radixMenu.append("span").attr("id", "radix-display").classed("radix-text", true).text(window.radix);
 radixMenu.append("ul").selectAll("li").data(radixOptions).enter().append("li").text((d)=>d).on("click", (ev, d)=>changeRadix(d));
@@ -642,7 +692,7 @@ newPrize();
 // window.W = W;
 window.d3 = _d3Selection; // console.log(window.W.pockets);
 
-},{"./wallet":"kh34X","d3-selection":"gn9gd","./prizes":"4TKh0","7a4cce533d7201d8":"gNWkO","e6c7046936c9d36e":"2sPWE","78f4fc830cc21940":"2t12F","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kh34X":[function(require,module,exports) {
+},{"./wallet":"kh34X","d3-selection":"gn9gd","./prizes":"4TKh0","./ui-functions":"8WT3G","8f5e2f6ff4ff5a29":"5XyJl","733d29b46e513ec5":"lBxnv","57811a87b980e150":"82Rge","3b964e2605a88024":"jpTSA","7a4cce533d7201d8":"gNWkO","e6c7046936c9d36e":"2sPWE","78f4fc830cc21940":"2t12F","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","20109f0245a30464":"189u7","e3cf0f7ffe5201be":"f31Mf"}],"kh34X":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _d3Selection = require("d3-selection");
@@ -860,11 +910,12 @@ class wallet {
     }
     decompositionFound() {
         console.log("Decomposition found");
-        const message = `<table>
-      <tr><td>${this.resultMessageValues()}</td></tr>
-      <tr><td>${this.resultMessagePowers()}</td></tr>
-      <tr><td>${this.resultMessageBase()}</td></tr>
-      </table>`;
+        let message = `<table>
+      <tr><td>${this.resultMessageValues()}</td></tr>`;
+        if (window.seniorMode) message += `
+        <tr><td>${this.resultMessagePowers()}</td></tr>
+        <tr><td>${this.resultMessageBase()}</td></tr>`;
+        message += `</table>`;
         if (this.value()) d3.select("#results").html(message);
         d3.selectAll(".explode-button").classed("disabled", true);
         d3.selectAll(".unexplode-button").classed("disabled", true);
@@ -4170,7 +4221,67 @@ module.exports = require("5d2be4418745f7b").getBundleURL("1e3qO") + "vase4.6fbf8
 },{"5d2be4418745f7b":"lgJ39"}],"jlofO":[function(require,module,exports) {
 module.exports = require("4632bb5ad41ddd38").getBundleURL("1e3qO") + "vase5.47a188a6.png" + "?" + Date.now();
 
-},{"4632bb5ad41ddd38":"lgJ39"}],"gNWkO":[function(require,module,exports) {
+},{"4632bb5ad41ddd38":"lgJ39"}],"8WT3G":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "createTextModal", ()=>createTextModal);
+var _d3Selection = require("d3-selection");
+// Text modals
+function createTextModal(id, titleKey, textUrl) {
+    // Creates a modal (HTMLDivElement) and a button that activates the modal.
+    // Returns an HTMLSpanElement that contains the button.
+    // 1. Create modal
+    const modal = _d3Selection.select("body").append("div").classed("modal", true).attr("id", id);
+    const content = modal.append("div").classed("modal-content", true);
+    const header = content.append("div").classed("modal-header", true);
+    const body = content.append("div").classed("modal-body", true);
+    const btnClose = header.append("span")// .attr("type", "button")
+    .classed("btn-close", true).html("&times");
+    header.append("div").text(titleKey);
+    fetch(textUrl).then((x)=>x.text()).then((text)=>{
+        // eslint-disable-next-line no-param-reassign
+        body.html(text);
+    })// eslint-disable-next-line no-console
+    .catch((error)=>console.log(error));
+    //   body.html(textId);
+    // 2. Create button
+    const container = document.createElement("span");
+    const button = _d3Selection.select(container).append("span")// .classed("btn btn-secondary", true)
+    // .attr("id", `btn-${id}`)
+    .text(titleKey);
+    // button.append('img').attr('src', iconCalculator);
+    //   button
+    //     .append("div")
+    //     .classed("translate", true)
+    //     .attr("data-i18n", `[html]${titleKey}`);
+    //   button.attr("data-bs-toggle", "modal").attr("data-bs-target", `#${id}`);
+    button.on("click", ()=>{
+        console.log("click");
+        // console.log(modal.style("display"));
+        modal.style("display", "block");
+    });
+    btnClose.on("click", ()=>{
+        modal.style("display", "none");
+    });
+    window.onclick = function(event) {
+        if (event.target == modal.node()) modal.style("display", "none");
+    };
+    return container;
+}
+
+},{"d3-selection":"gn9gd","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5XyJl":[function(require,module,exports) {
+module.exports = require("1b7c624da646e4c6").getBundleURL("1e3qO") + "info.13c9746c.png" + "?" + Date.now();
+
+},{"1b7c624da646e4c6":"lgJ39"}],"lBxnv":[function(require,module,exports) {
+module.exports = require("7bfaf135c054892").getBundleURL("1e3qO") + "intro.9a16c4fd.html" + "?" + Date.now();
+
+},{"7bfaf135c054892":"lgJ39"}],"82Rge":[function(require,module,exports) {
+module.exports = require("7c6eef6711dbc462").getBundleURL("1e3qO") + "prints.e740e000.html" + "?" + Date.now();
+
+},{"7c6eef6711dbc462":"lgJ39"}],"jpTSA":[function(require,module,exports) {
+module.exports = require("de50568d82e146b0").getBundleURL("1e3qO") + "about.eac389e3.html" + "?" + Date.now();
+
+},{"de50568d82e146b0":"lgJ39"}],"gNWkO":[function(require,module,exports) {
 module.exports = require("8ce815bc539c10da").getBundleURL("1e3qO") + "star.f0695dfc.png" + "?" + Date.now();
 
 },{"8ce815bc539c10da":"lgJ39"}],"2sPWE":[function(require,module,exports) {
@@ -4179,6 +4290,12 @@ module.exports = require("a5586c0da40d40f9").getBundleURL("1e3qO") + "reload.8bc
 },{"a5586c0da40d40f9":"lgJ39"}],"2t12F":[function(require,module,exports) {
 module.exports = require("6276ba2e8bddb20b").getBundleURL("1e3qO") + "3bags.8c9e9689.svg" + "?" + Date.now();
 
-},{"6276ba2e8bddb20b":"lgJ39"}]},["bMKAI","4j3ZX"], "4j3ZX", "parcelRequire408e")
+},{"6276ba2e8bddb20b":"lgJ39"}],"189u7":[function(require,module,exports) {
+module.exports = require("d095a46b580e3b9f").getBundleURL("1e3qO") + "mag-glass.77ffb4b3.png" + "?" + Date.now();
+
+},{"d095a46b580e3b9f":"lgJ39"}],"f31Mf":[function(require,module,exports) {
+module.exports = require("277b8e52e0edf4bf").getBundleURL("1e3qO") + "microscope.a39b184a.png" + "?" + Date.now();
+
+},{"277b8e52e0edf4bf":"lgJ39"}]},["bMKAI","4j3ZX"], "4j3ZX", "parcelRequire408e")
 
 //# sourceMappingURL=index.ca39cc5e.js.map

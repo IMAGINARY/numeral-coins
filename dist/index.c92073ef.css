@@ -6,13 +6,28 @@
 body {
   -webkit-user-select: none;
   user-select: none;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
   font-family: Fredoka;
   font-size: 200%;
+}
+
+.modal {
+  font-family: sans-serif;
+  font-size: 14pt;
+}
+
+.modal-body img {
+  width: 80%;
+  margin: 1em auto;
+  display: block;
 }
 
 body:before {
   content: "";
   opacity: .3;
+  pointer-events: none;
   background-image: url("background.3289ddc3.jpg");
   background-position: center;
   background-repeat: no-repeat;
@@ -25,14 +40,18 @@ body:before {
   touch-action: manipulation;
 }
 
-#config-opts {
-  align-items: center;
-  gap: 30px;
-  margin: 10px;
-  display: flex;
-  position: absolute;
-  top: 0;
-  right: 0;
+#radix-menu.dropdown li {
+  color: #fff;
+  background: #ffc232;
+  padding: 20px;
+}
+
+#info-menu.dropdown li {
+  background: #aaa;
+}
+
+span:is(#info-menu.dropdown li) {
+  display: block;
 }
 
 #central {

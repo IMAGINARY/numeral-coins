@@ -26,6 +26,22 @@
   width: 100%;
 }
 
+#config-opts {
+  flex-direction: row;
+  align-items: center;
+  gap: 50px;
+  height: 60px;
+  margin: 10px;
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#config-opts div, #config-opts img {
+  height: 100%;
+}
+
 #central {
   position: relative;
 }
