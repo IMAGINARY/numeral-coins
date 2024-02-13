@@ -2,13 +2,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: auto;
 }
 
 .graphic-pocket-container {
   position: relative;
-  width: 200px;
-  height: 300px;
+  /* width: 200px;
+  height: 300px; */
+  width: 100%;
   text-align: center;
+  max-width: 200px;
+}
+
+.graphic-pocket-bg {
+  max-width: 200px;
 }
 
 .graphic-pocket {
@@ -54,6 +61,15 @@ img.coin {
   gap: 5px;
   min-height: 20px;
 }
+
+/* @media only screen and (max-width: 950px) {
+  .creation-controls {
+    flex-direction: column-reverse;
+  }
+  .exploding-controls {
+    justify-content: flex-start;
+  }
+} */
 
 #animation-container {
   position: absolute;

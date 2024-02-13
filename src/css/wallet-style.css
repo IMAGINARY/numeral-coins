@@ -29,16 +29,16 @@
   text-align: center;
   user-select: none;
   /* background: rgb(244, 233, 40); */
-  height: 60px;
-  width: 60px;
+  max-height: 60px;
+  max-width: 60px;
 }
 
 .add-button {
   text-align: center;
   user-select: none;
   /* background: rgb(238, 164, 164); */
-  width: 30px;
-  height: 30px;
+  max-width: 30px;
+  max-height: 30px;
   padding: 5px;
   cursor: pointer;
   &.disabled {
@@ -51,8 +51,8 @@
   text-align: center;
   user-select: none;
   /* background: rgb(174, 174, 237); */
-  width: 30px;
-  height: 30px;
+  max-width: 30px;
+  max-height: 30px;
   padding: 5px;
   cursor: pointer;
   &.disabled {
