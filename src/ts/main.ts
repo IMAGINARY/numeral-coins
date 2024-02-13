@@ -38,6 +38,9 @@ function makeWallet() {
 function newPrize() {
   const i = Math.floor(Math.random() * prizes.length);
   d3.select("#prize").select("img").attr("src", prizes[i].img);
+  d3.select("#prize-img").classed("decomposition-found", false);
+  d3.select("#walletValue-img").classed("goal-reached", false);
+
   d3.select("#price").text(prizes[i].price.toString());
 
   window.price = prizes[i].price;
@@ -46,7 +49,14 @@ function newPrize() {
 function changeRadix(b: number) {
   window.radix = b;
   d3.select("#radix-display").text(b.toString());
+  d3.select("#prize-img").classed("decomposition-found", false);
+  d3.select("#walletValue-img").classed("goal-reached", false);
+  clearResults();
   makeWallet();
+}
+
+function clearResults() {
+  d3.select("#results").text("");
 }
 
 /* MAIN SETUP */
@@ -169,7 +179,7 @@ menu
   .attr("src", new URL("../img/reload.png", import.meta.url).href)
   .attr("id", "prize-reload-button")
   .on("click", () => {
-    d3.select("#results").text("");
+    clearResults();
     newPrize();
     makeWallet();
   });
@@ -179,6 +189,7 @@ const walletValue = menu.append("div").attr("id", "walletValue");
 
 walletValue
   .append("img")
+  .attr("id", "walletValue-img")
   .attr("src", new URL("../svg/3bags.svg#svg1", import.meta.url).href);
 
 walletValue.append("span").attr("id", "total");

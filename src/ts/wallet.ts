@@ -400,6 +400,7 @@ class wallet implements wallet {
     console.log("Goal reached");
     d3.selectAll(".add-button").classed("disabled", true);
     d3.selectAll(".substract-button").classed("disabled", true);
+    d3.select("#walletValue-img").classed("goal-reached", true);
   }
 
   // Check if the pockets represent the base-r decomposition
@@ -435,6 +436,8 @@ class wallet implements wallet {
     }
     d3.selectAll(".explode-button").classed("disabled", true);
     d3.selectAll(".unexplode-button").classed("disabled", true);
+
+    d3.select("#prize-img").classed("decomposition-found", true);
   }
 
   resultMessagePowers() {
