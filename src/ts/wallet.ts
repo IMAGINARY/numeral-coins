@@ -439,14 +439,17 @@ class wallet implements wallet {
 
   resultMessagePowers() {
     //Message: decomposition as sums of powers
-    const monomials = this.pockets
-      .map((v, i) =>
-        v
-          ? `<span class="coefficient-text">${v.toString()}</span>
+    const arr = [...this.pockets];
+    while (arr[arr.length - 1] === 0) {
+      // While the last element is a 0,
+      arr.pop(); // Remove that last element
+    }
+
+    const monomials = arr.map(
+      (v, i) =>
+        `<span class="coefficient-text">${v.toString()}</span>
            × <span class="radix-text">${this.radix}</span><sup>${i}</sup>`
-          : ``
-      )
-      .filter((n) => n);
+    );
 
     return `${this.value()} = ${monomials.reverse().join(" + ")}`;
   }
