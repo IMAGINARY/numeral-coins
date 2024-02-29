@@ -603,13 +603,21 @@ function makeWallet() {
 function newPrize() {
     const i = Math.floor(Math.random() * (0, _prizes.prizes).length);
     _d3Selection.select("#prize").select("img").attr("src", (0, _prizes.prizes)[i].img);
+    _d3Selection.select("#prize-img").classed("decomposition-found", false);
+    _d3Selection.select("#walletValue-img").classed("goal-reached", false);
     _d3Selection.select("#price").text((0, _prizes.prizes)[i].price.toString());
     window.price = (0, _prizes.prizes)[i].price;
 }
 function changeRadix(b) {
     window.radix = b;
     _d3Selection.select("#radix-display").text(b.toString());
+    _d3Selection.select("#prize-img").classed("decomposition-found", false);
+    _d3Selection.select("#walletValue-img").classed("goal-reached", false);
+    clearResults();
     makeWallet();
+}
+function clearResults() {
+    _d3Selection.select("#results").text("");
 }
 /* MAIN SETUP */ // <div id="senior-mode-ckb">
 // Junior
@@ -674,13 +682,13 @@ radixMenu.append("span").attr("id", "radix-display").classed("radix-text", true)
 radixMenu.append("ul").selectAll("li").data(radixOptions).enter().append("li").text((d)=>d).on("click", (ev, d)=>changeRadix(d));
 // Create load prize button
 menu.append("div").append("img").attr("src", new URL(require("e6c7046936c9d36e")).href).attr("id", "prize-reload-button").on("click", ()=>{
-    _d3Selection.select("#results").text("");
+    clearResults();
     newPrize();
     makeWallet();
 });
 // Create current total wallet value display
 const walletValue = menu.append("div").attr("id", "walletValue");
-walletValue.append("img").attr("src", new URL(require("78f4fc830cc21940")).href);
+walletValue.append("img").attr("id", "walletValue-img").attr("src", new URL(require("78f4fc830cc21940")).href);
 walletValue.append("span").attr("id", "total");
 //
 const prizeDiv = _d3Selection.select("#central").append("div").attr("id", "prize");
@@ -779,7 +787,7 @@ class wallet {
         // Create structure on pockets
         const pockets = d3.selectAll(".pocket");
         const graphicPocketsContainer = pockets.append("div").classed("graphic-pocket-container", true);
-        graphicPocketsContainer.append("img").attr("src", new URL(require("7dc614961ebe5a6d")).href);
+        graphicPocketsContainer.append("img").classed("graphic-pocket-bg", true).attr("src", new URL(require("7dc614961ebe5a6d")).href);
         graphicPocketsContainer.append("div").attr("class", "graphic-pocket");
         const numericPockets = pockets.append("div").attr("class", "numeric-pocket coefficient-text");
         const creationControls = pockets.append("div").attr("class", "creation-controls");
@@ -900,6 +908,7 @@ class wallet {
         console.log("Goal reached");
         d3.selectAll(".add-button").classed("disabled", true);
         d3.selectAll(".substract-button").classed("disabled", true);
+        d3.select("#walletValue-img").classed("goal-reached", true);
     }
     // Check if the pockets represent the base-r decomposition
     checkDecomposed() {
@@ -919,11 +928,17 @@ class wallet {
         if (this.value()) d3.select("#results").html(message);
         d3.selectAll(".explode-button").classed("disabled", true);
         d3.selectAll(".unexplode-button").classed("disabled", true);
+        d3.select("#prize-img").classed("decomposition-found", true);
     }
     resultMessagePowers() {
         //Message: decomposition as sums of powers
-        const monomials = this.pockets.map((v, i)=>v ? `<span class="coefficient-text">${v.toString()}</span>
-           \xd7 <span class="radix-text">${this.radix}</span><sup>${i}</sup>` : ``).filter((n)=>n);
+        const arr = [
+            ...this.pockets
+        ];
+        while(arr[arr.length - 1] === 0)// While the last element is a 0,
+        arr.pop(); // Remove that last element
+        const monomials = arr.map((v, i)=>`<span class="coefficient-text">${v.toString()}</span>
+           \xd7 <span class="radix-text">${this.radix}</span><sup>${i}</sup>`);
         return `${this.value()} = ${monomials.reverse().join(" + ")}`;
     }
     resultMessageValues() {

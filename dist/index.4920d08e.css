@@ -1,14 +1,19 @@
 .pocket {
   flex-direction: column;
+  flex: auto;
   align-items: center;
   display: flex;
 }
 
 .graphic-pocket-container {
   text-align: center;
-  width: 200px;
-  height: 300px;
+  width: 100%;
+  max-width: 200px;
   position: relative;
+}
+
+.graphic-pocket-bg {
+  max-width: 200px;
 }
 
 .graphic-pocket {

@@ -70,12 +70,20 @@ span:is(#info-menu.dropdown li) {
   max-height: 300px;
 }
 
+#prize-img.decomposition-found {
+  filter: drop-shadow(0 0 1.75rem #00f);
+}
+
 #price {
   background-color: bisque;
   border: 2px solid #000;
   border-radius: 5px;
   margin: auto;
   padding: .5em 1em;
+}
+
+#walletValue-img.goal-reached {
+  filter: drop-shadow(0 0 .5rem green);
 }
 
 #results {
