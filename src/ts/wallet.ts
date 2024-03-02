@@ -31,17 +31,20 @@ class wallet implements wallet {
   setPocket(index: number, x: number) {
     this.pockets[index] = x;
     this.fillPocketsUI();
+    this.checkStatus();
   }
 
   addCoin(index: number) {
     this.pockets[index] += 1;
     this.fillPocketsUI();
+    this.checkStatus();
   }
 
   removeCoin(index: number) {
     if (this.pockets[index] > 0) {
       this.pockets[index] -= 1;
       this.fillPocketsUI();
+      this.checkStatus();
     }
   }
 
@@ -56,6 +59,7 @@ class wallet implements wallet {
     }
     // this.fillPocketsUI();
     this.explodeAnimation();
+    this.checkStatus();
   }
 
   // unexplode: split points on index index into previous pocket
@@ -69,6 +73,7 @@ class wallet implements wallet {
     }
     // this.fillPocketsUI();
     this.unexplodeAnimation();
+    this.checkStatus();
   }
 
   value() {
@@ -206,14 +211,6 @@ class wallet implements wallet {
     coins.exit().remove();
 
     d3.select("#total").text(this.value());
-
-    if (this.checkGoal()) {
-      this.goalReached();
-
-      if (this.checkDecomposed()) {
-        this.decompositionFound();
-      }
-    }
   }
 
   explodeAnimation() {
@@ -288,14 +285,6 @@ class wallet implements wallet {
       });
 
     d3.select("#total").text(this.value());
-
-    if (this.checkGoal()) {
-      this.goalReached();
-
-      if (this.checkDecomposed()) {
-        this.decompositionFound();
-      }
-    }
   }
 
   unexplodeAnimation() {
@@ -384,7 +373,10 @@ class wallet implements wallet {
       });
 
     d3.select("#total").text(this.value());
+  }
 
+  // Check all
+  checkStatus() {
     if (this.checkGoal()) {
       this.goalReached();
 
@@ -393,6 +385,7 @@ class wallet implements wallet {
       }
     }
   }
+
   // Check if the value in the wallet is the goal price
   checkGoal() {
     return this.value() === window.price;
