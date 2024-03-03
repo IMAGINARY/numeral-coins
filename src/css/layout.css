@@ -1,9 +1,24 @@
-#wallet {
-  display: flex;
-  flex-wrap: wrap-reverse;
-  flex-direction: row-reverse;
-  justify-content: space-evenly;
+body {
+  overscroll-behavior: none;
+
+  /* overflow: hidden; */
+  padding: 0;
+  /* height: 100vh; */
+  /* box-sizing: border-box; */
+}
+
+#central {
+  box-sizing: border-box;
   position: relative;
+  height: 50vh;
+  width: 100%;
+  padding: 15px;
+  padding-left: 150px;
+}
+#wallet-container {
+  box-sizing: border-box;
+  position: relative;
+  height: 50vh;
 }
 
 #senior-mode-ckb {
@@ -44,10 +59,6 @@
 }
 #config-opts img {
   height: 100%;
-}
-
-#central {
-  position: relative;
 }
 
 #radix-display {

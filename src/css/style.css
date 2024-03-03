@@ -66,12 +66,12 @@ body::before {
 
 #central {
   text-align: center;
-  padding: 1em;
+  /* padding: 1em; */
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  gap: 70px;
+  gap: 40px;
 }
 #prize-img {
   max-width: 300px;
