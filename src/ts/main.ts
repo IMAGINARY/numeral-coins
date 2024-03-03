@@ -1,6 +1,6 @@
 import wallet from "./wallet";
 import * as d3 from "d3-selection";
-import { prizes } from "./prizes";
+import { prizes, juniorPrizes } from "./prizes";
 import { createTextModal } from "./ui-functions";
 
 declare global {
@@ -10,23 +10,24 @@ declare global {
     price: number;
     radix: number;
     seniorMode: boolean;
+    juniorIndex: number;
   }
 }
 
-let mode = "junior";
-let maxPrice = 400;
+/** GLOBAL VARIABLES */
 
+let maxPrice = 400;
 window.price = 145;
 window.radix = 4;
 window.seniorMode = false;
+window.juniorIndex = 0;
 
-// let W: wallet;
+/** AUX FUNCTIONS */
 
 function makeWallet() {
   console.log("making wallet");
 
   document.getElementById("wallet")?.remove();
-  // document.getElementById("walletValue")?.remove();
 
   // calculate number of pockets
   let i = 0;
@@ -46,6 +47,28 @@ function newPrize() {
   window.price = prizes[i].price;
 }
 
+function newJuniorPrize() {
+  if (
+    window.price === juniorPrizes[window.juniorIndex].price &&
+    window.radix === juniorPrizes[window.juniorIndex].radix &&
+    window.W.checkGoal() &&
+    window.W.checkDecomposed()
+  ) {
+    window.juniorIndex = (window.juniorIndex + 1) % juniorPrizes.length;
+  }
+  changeRadix(juniorPrizes[window.juniorIndex].radix);
+
+  d3.select("#prize")
+    .select("img")
+    .attr("src", juniorPrizes[window.juniorIndex].img);
+  d3.select("#prize-img").classed("decomposition-found", false);
+  d3.select("#walletValue-img").classed("goal-reached", false);
+
+  d3.select("#price").text(juniorPrizes[window.juniorIndex].price.toString());
+
+  window.price = juniorPrizes[window.juniorIndex].price;
+}
+
 function changeRadix(b: number) {
   window.radix = b;
   d3.select("#radix-display").text(b.toString());
@@ -60,18 +83,6 @@ function clearResults() {
 }
 
 /* MAIN SETUP */
-
-// <div id="senior-mode-ckb">
-// Junior
-// <span class="checkbox-wrapper-49">
-//   <div class="block">
-//     <input data-index="0" id="cheap-49" type="checkbox" />
-//     <label for="cheap-49"></label>
-//   </div>
-// </span>
-// Senior
-// </div>
-// <!-- <div>ⓘ</div> -->
 
 // Create Senior mode selector
 const seniorSelector = d3
@@ -99,8 +110,6 @@ d3.select("#cheap-49").on("change", () => {
   if (window.W.checkGoal() && window.W.checkDecomposed()) {
     window.W.decompositionFound();
   }
-  // makeWallet();
-  // newPrize();
 });
 
 // Create infoMenu
@@ -180,7 +189,7 @@ menu
   .attr("id", "prize-reload-button")
   .on("click", () => {
     clearResults();
-    newPrize();
+    window.seniorMode ? newPrize() : newJuniorPrize();
     makeWallet();
   });
 
@@ -203,7 +212,7 @@ prizeDiv.append("div").attr("id", "price");
 d3.select("#central").append("div").attr("id", "results");
 
 makeWallet();
-newPrize();
+newJuniorPrize();
 // window.W = W;
 window.d3 = d3;
 // console.log(window.W.pockets);
