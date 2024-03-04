@@ -92,7 +92,7 @@ const seniorSelector = d3
 
 seniorSelector
   .append("img")
-  .attr("src", new URL("../img/mag-glass.png", import.meta.url).href);
+  .attr("src", new URL("../img/eye.png", import.meta.url).href);
 
 seniorSelector.append("span").classed("checkbox-wrapper-49", true).html(`
   <div class="block">
@@ -185,7 +185,7 @@ radixMenu
 menu
   .append("div")
   .append("img")
-  .attr("src", new URL("../img/reload.png", import.meta.url).href)
+  .attr("src", new URL("../img/forward.png", import.meta.url).href)
   .attr("id", "prize-reload-button")
   .on("click", () => {
     clearResults();

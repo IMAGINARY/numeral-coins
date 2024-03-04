@@ -64,6 +64,12 @@ body::before {
   }
 }
 
+#senior-mode-ckb {
+  background-color: rgb(208, 208, 208);
+  border-radius: 200px;
+  padding: 5px;
+}
+
 #central {
   text-align: center;
   /* padding: 1em; */
