@@ -36,7 +36,8 @@
   border-radius: 5px;
   display: flex;
   flex-wrap: wrap;
-  overflow: scroll;
+  /* overflow: scroll; */
+  overflow: hidden;
   gap: 5px;
   flex-direction: column-reverse;
   align-content: flex-start;
