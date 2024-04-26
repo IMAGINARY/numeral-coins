@@ -1,7 +1,12 @@
 import wallet from "./wallet";
 import * as d3 from "d3-selection";
-import { prizesImgs, juniorPrizes } from "./prizes";
-import { createTextModal } from "./ui-functions";
+import {
+  clearResults,
+  createRadixMenu,
+  createTextModal,
+  makeWallet,
+  newChallenge,
+} from "./ui-functions";
 import { levelIcons } from "./img-assets";
 
 interface mode {
@@ -81,64 +86,6 @@ const modesList = [
 
 window.currentMode = modesList[0];
 
-/** AUX FUNCTIONS */
-
-function makeWallet() {
-  document.getElementById("wallet")?.remove();
-
-  // calculate number of pockets
-  let i = 0;
-
-  if (window.currentMode.type === "junior") {
-    for (i = 0; window.radix ** i - 1 < window.price; i += 1) {}
-  } else {
-    for (
-      i = 0;
-      window.radix ** i - 1 < window.currentMode.priceInterval[1];
-      i += 1
-    ) {}
-  }
-  console.log(`making wallet with ${i} pockets`);
-
-  window.W = new wallet(window.radix, i);
-}
-
-function newChallenge() {
-  // Set price
-  window.price = Math.floor(
-    window.currentMode.priceInterval[0] +
-      Math.random() *
-        (window.currentMode.priceInterval[1] -
-          window.currentMode.priceInterval[0] +
-          1)
-  );
-
-  // Set prize image
-
-  window.prizeImg = prizesImgs[Math.floor(Math.random() * prizesImgs.length)];
-
-  d3.select("#prize").select("img").attr("src", window.prizeImg);
-  d3.select("#prize-img").classed("decomposition-found", false);
-  d3.select("#walletValue-img").classed("goal-reached", false);
-
-  d3.select("#price").text(window.price.toString());
-
-  makeWallet();
-}
-
-function changeRadix(b: number) {
-  window.radix = b;
-  d3.select("#radix-display").text(b.toString());
-  d3.select("#prize-img").classed("decomposition-found", false);
-  d3.select("#walletValue-img").classed("goal-reached", false);
-  clearResults();
-  makeWallet();
-}
-
-function clearResults() {
-  d3.select("#results").text("");
-}
-
 /* MAIN SETUP */
 
 // Create mode selector (radio)
@@ -178,34 +125,6 @@ modeItems
   .append("img")
   .attr("src", (d) => levelIcons[`level${d.icon}` as keyof typeof levelIcons])
   .attr("class", (d) => d.type);
-
-// // Create Senior mode selector
-// const seniorSelector = d3
-//   .select("#config-opts")
-//   .append("div")
-//   .attr("id", "senior-mode-ckb");
-
-// seniorSelector
-//   .append("img")
-//   .attr("src", new URL("../img/eye.png", import.meta.url).href);
-
-// seniorSelector.append("span").classed("checkbox-wrapper-49", true).html(`
-//   <div class="block">
-//     <input data-index="0" id="cheap-49" type="checkbox" />
-//     <label for="cheap-49"></label>
-//   </div>
-// `);
-
-// seniorSelector
-//   .append("img")
-//   .attr("src", new URL("../img/microscope.png", import.meta.url).href);
-
-// d3.select("#cheap-49").on("change", () => {
-//   window.seniorMode = d3.select("#cheap-49").property("checked");
-//   if (window.W.checkGoal() && window.W.checkDecomposed()) {
-//     window.W.decompositionFound();
-//   }
-// });
 
 // Create infoMenu
 
@@ -249,40 +168,7 @@ infoMenu
 // Create radix menu
 
 const menu = d3.select("#menu");
-
 menu.append("div").attr("id", "radix-menu-container");
-
-const radixOptions = [2, 3, 4, 5, 10];
-
-function createRadixMenu(radixOptions: number[]) {
-  document.getElementById("radix-menu")?.remove();
-
-  const radixMenu = d3
-    .select("#radix-menu-container")
-    .append("div")
-    .attr("id", "radix-menu")
-    .classed("dropdown", true)
-    .classed("dropdown-right", true);
-
-  radixMenu
-    .append("img")
-    .attr("src", new URL("../img/star.png", import.meta.url).href);
-
-  radixMenu
-    .append("span")
-    .attr("id", "radix-display")
-    .classed("radix-text", true)
-    .text(window.radix);
-
-  radixMenu
-    .append("ul")
-    .selectAll("li")
-    .data(radixOptions)
-    .enter()
-    .append("li")
-    .text((d) => d)
-    .on("click", (ev, d) => changeRadix(d));
-}
 
 createRadixMenu([2, 3, 4, 5, 10]);
 
@@ -309,7 +195,6 @@ walletValue
 
 walletValue.append("span").attr("id", "total");
 
-//
 const prizeDiv = d3.select("#central").append("div").attr("id", "prize");
 
 prizeDiv.append("img").attr("id", "prize-img");
@@ -319,7 +204,4 @@ d3.select("#central").append("div").attr("id", "results");
 
 makeWallet();
 newChallenge();
-// newJuniorPrize();
-// window.W = W;
 window.d3 = d3;
-// console.log(window.W.pockets);
