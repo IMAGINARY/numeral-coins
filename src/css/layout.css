@@ -19,6 +19,9 @@ body {
   box-sizing: border-box;
   position: relative;
   height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #senior-mode-ckb {
@@ -46,10 +49,10 @@ body {
   position: absolute;
   right: 0;
   top: 0;
-  height: 60px;
+  height: 55px;
   display: flex;
   flex-direction: row;
-  gap: 50px;
+  gap: 25px;
   align-items: center;
   margin: 10px;
 }

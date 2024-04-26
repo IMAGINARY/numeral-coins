@@ -1,7 +1,16 @@
 import wallet from "./wallet";
 import * as d3 from "d3-selection";
-import { prizes, juniorPrizes } from "./prizes";
+import { prizesImgs, juniorPrizes } from "./prizes";
 import { createTextModal } from "./ui-functions";
+import { levelIcons } from "./img-assets";
+
+interface mode {
+  id: number;
+  type: "junior" | "senior";
+  level: number;
+  icon: string;
+  priceInterval: number[];
+}
 
 declare global {
   interface Window {
@@ -11,6 +20,9 @@ declare global {
     radix: number;
     seniorMode: boolean;
     juniorIndex: number;
+    currentMode: mode;
+    prizeImg: string;
+    radixOptions: number[];
   }
 }
 
@@ -18,55 +30,100 @@ declare global {
 
 let maxPrice = 400;
 window.price = 145;
-window.radix = 4;
+window.radix = 2;
 window.seniorMode = false;
 window.juniorIndex = 0;
+
+const modesList = [
+  {
+    id: 1,
+    type: "junior",
+    level: 1,
+    icon: "1",
+    priceInterval: [1, 5],
+  },
+  {
+    id: 2,
+    type: "junior",
+    level: 2,
+    icon: "2",
+    priceInterval: [5, 10],
+  },
+  {
+    id: 3,
+    type: "junior",
+    level: 3,
+    icon: "3",
+    priceInterval: [10, 20],
+  },
+  {
+    id: 4,
+    type: "senior",
+    level: 1,
+    icon: "4",
+    priceInterval: [1, 20],
+  },
+  {
+    id: 5,
+    type: "senior",
+    level: 2,
+    icon: "5",
+    priceInterval: [20, 100],
+  },
+  {
+    id: 6,
+    type: "senior",
+    level: 3,
+    icon: "6",
+    priceInterval: [100, 400],
+  },
+] as mode[];
+
+window.currentMode = modesList[0];
 
 /** AUX FUNCTIONS */
 
 function makeWallet() {
-  console.log("making wallet");
-
   document.getElementById("wallet")?.remove();
 
   // calculate number of pockets
   let i = 0;
-  for (i = 0; window.radix ** i - 1 < maxPrice; i += 1) {}
+
+  if (window.currentMode.type === "junior") {
+    for (i = 0; window.radix ** i - 1 < window.price; i += 1) {}
+  } else {
+    for (
+      i = 0;
+      window.radix ** i - 1 < window.currentMode.priceInterval[1];
+      i += 1
+    ) {}
+  }
+  console.log(`making wallet with ${i} pockets`);
 
   window.W = new wallet(window.radix, i);
 }
 
-function newPrize() {
-  const i = Math.floor(Math.random() * prizes.length);
-  d3.select("#prize").select("img").attr("src", prizes[i].img);
+function newChallenge() {
+  // Set price
+  window.price = Math.floor(
+    window.currentMode.priceInterval[0] +
+      Math.random() *
+        (window.currentMode.priceInterval[1] -
+          window.currentMode.priceInterval[0] +
+          1)
+  );
+
+  // Set prize image
+
+  window.prizeImg = prizesImgs[Math.floor(Math.random() * prizesImgs.length)];
+
+  d3.select("#prize").select("img").attr("src", window.prizeImg);
   d3.select("#prize-img").classed("decomposition-found", false);
   d3.select("#walletValue-img").classed("goal-reached", false);
 
-  d3.select("#price").text(prizes[i].price.toString());
+  d3.select("#price").text(window.price.toString());
 
-  window.price = prizes[i].price;
-}
-
-function newJuniorPrize() {
-  if (
-    window.price === juniorPrizes[window.juniorIndex].price &&
-    window.radix === juniorPrizes[window.juniorIndex].radix &&
-    window.W.checkGoal() &&
-    window.W.checkDecomposed()
-  ) {
-    window.juniorIndex = (window.juniorIndex + 1) % juniorPrizes.length;
-  }
-  changeRadix(juniorPrizes[window.juniorIndex].radix);
-
-  d3.select("#prize")
-    .select("img")
-    .attr("src", juniorPrizes[window.juniorIndex].img);
-  d3.select("#prize-img").classed("decomposition-found", false);
-  d3.select("#walletValue-img").classed("goal-reached", false);
-
-  d3.select("#price").text(juniorPrizes[window.juniorIndex].price.toString());
-
-  window.price = juniorPrizes[window.juniorIndex].price;
+  makeWallet();
 }
 
 function changeRadix(b: number) {
@@ -84,33 +141,71 @@ function clearResults() {
 
 /* MAIN SETUP */
 
-// Create Senior mode selector
-const seniorSelector = d3
+// Create mode selector (radio)
+const modeSelector = d3
   .select("#config-opts")
   .append("div")
-  .attr("id", "senior-mode-ckb");
+  .attr("id", "mode-selector");
 
-seniorSelector
+const modeItems = modeSelector
+  .selectAll("label")
+  .data(modesList)
+  .enter()
+  .append("label")
+  .attr("class", (d) => `icon-level ${d.type}`);
+
+modeItems
+  .append("input")
+  .attr("type", "radio")
+  .attr("name", "modeRadio")
+  .property("checked", (d) => d.id === 1)
+  .on("change", (ev, d) => {
+    clearResults();
+    window.currentMode = d;
+    console.log("mode changed", window.currentMode);
+
+    if (window.currentMode.type === "junior") {
+      createRadixMenu([2, 3, 4, 5, 10]);
+      window.seniorMode = false;
+    } else {
+      createRadixMenu([2, 3, 4, 5, 10, 12, 16]);
+      window.seniorMode = true;
+    }
+    newChallenge();
+  });
+
+modeItems
   .append("img")
-  .attr("src", new URL("../img/eye.png", import.meta.url).href);
+  .attr("src", (d) => levelIcons[`level${d.icon}` as keyof typeof levelIcons])
+  .attr("class", (d) => d.type);
 
-seniorSelector.append("span").classed("checkbox-wrapper-49", true).html(`
-  <div class="block">
-    <input data-index="0" id="cheap-49" type="checkbox" />
-    <label for="cheap-49"></label>
-  </div>
-`);
+// // Create Senior mode selector
+// const seniorSelector = d3
+//   .select("#config-opts")
+//   .append("div")
+//   .attr("id", "senior-mode-ckb");
 
-seniorSelector
-  .append("img")
-  .attr("src", new URL("../img/microscope.png", import.meta.url).href);
+// seniorSelector
+//   .append("img")
+//   .attr("src", new URL("../img/eye.png", import.meta.url).href);
 
-d3.select("#cheap-49").on("change", () => {
-  window.seniorMode = d3.select("#cheap-49").property("checked");
-  if (window.W.checkGoal() && window.W.checkDecomposed()) {
-    window.W.decompositionFound();
-  }
-});
+// seniorSelector.append("span").classed("checkbox-wrapper-49", true).html(`
+//   <div class="block">
+//     <input data-index="0" id="cheap-49" type="checkbox" />
+//     <label for="cheap-49"></label>
+//   </div>
+// `);
+
+// seniorSelector
+//   .append("img")
+//   .attr("src", new URL("../img/microscope.png", import.meta.url).href);
+
+// d3.select("#cheap-49").on("change", () => {
+//   window.seniorMode = d3.select("#cheap-49").property("checked");
+//   if (window.W.checkGoal() && window.W.checkDecomposed()) {
+//     window.W.decompositionFound();
+//   }
+// });
 
 // Create infoMenu
 
@@ -155,31 +250,41 @@ infoMenu
 
 const menu = d3.select("#menu");
 
+menu.append("div").attr("id", "radix-menu-container");
+
 const radixOptions = [2, 3, 4, 5, 10];
-const radixMenu = menu
-  .append("div")
-  .attr("id", "radix-menu")
-  .classed("dropdown", true)
-  .classed("dropdown-right", true);
 
-radixMenu
-  .append("img")
-  .attr("src", new URL("../img/star.png", import.meta.url).href);
+function createRadixMenu(radixOptions: number[]) {
+  document.getElementById("radix-menu")?.remove();
 
-radixMenu
-  .append("span")
-  .attr("id", "radix-display")
-  .classed("radix-text", true)
-  .text(window.radix);
+  const radixMenu = d3
+    .select("#radix-menu-container")
+    .append("div")
+    .attr("id", "radix-menu")
+    .classed("dropdown", true)
+    .classed("dropdown-right", true);
 
-radixMenu
-  .append("ul")
-  .selectAll("li")
-  .data(radixOptions)
-  .enter()
-  .append("li")
-  .text((d) => d)
-  .on("click", (ev, d) => changeRadix(d));
+  radixMenu
+    .append("img")
+    .attr("src", new URL("../img/star.png", import.meta.url).href);
+
+  radixMenu
+    .append("span")
+    .attr("id", "radix-display")
+    .classed("radix-text", true)
+    .text(window.radix);
+
+  radixMenu
+    .append("ul")
+    .selectAll("li")
+    .data(radixOptions)
+    .enter()
+    .append("li")
+    .text((d) => d)
+    .on("click", (ev, d) => changeRadix(d));
+}
+
+createRadixMenu([2, 3, 4, 5, 10]);
 
 // Create load prize button
 menu
@@ -189,7 +294,8 @@ menu
   .attr("id", "prize-reload-button")
   .on("click", () => {
     clearResults();
-    window.seniorMode ? newPrize() : newJuniorPrize();
+    newChallenge();
+    // window.seniorMode ? newChallenge() : newJuniorPrize();
     makeWallet();
   });
 
@@ -212,7 +318,8 @@ prizeDiv.append("div").attr("id", "price");
 d3.select("#central").append("div").attr("id", "results");
 
 makeWallet();
-newJuniorPrize();
+newChallenge();
+// newJuniorPrize();
 // window.W = W;
 window.d3 = d3;
 // console.log(window.W.pockets);

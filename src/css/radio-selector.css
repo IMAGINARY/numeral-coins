@@ -1,0 +1,31 @@
+#mode-selector {
+  display: flex;
+  gap: 3px;
+}
+
+#mode-selector img {
+  height: 85%;
+}
+
+#mode-selector input[type="radio"] {
+  display: none;
+  visibility: hidden;
+}
+
+label.icon-level.junior input ~ img {
+  background: #55d7e877;
+}
+
+label.icon-level.senior input ~ img {
+  background: #f18e1e77;
+}
+
+label.icon-level input ~ img {
+  border: 3px solid transparent;
+  border-radius: 5px;
+}
+
+label.icon-level input:checked ~ img {
+  border: 3px solid blue;
+  border-radius: 5px;
+}
