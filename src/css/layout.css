@@ -10,7 +10,7 @@ body {
 #central {
   box-sizing: border-box;
   position: relative;
-  height: 50vh;
+  height: 55vh;
   width: 100%;
   padding: 15px;
   padding-left: 150px;
@@ -18,10 +18,34 @@ body {
 #wallet-container {
   box-sizing: border-box;
   position: relative;
-  height: 50vh;
+  height: 45vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+}
+
+#prize {
+  height: 100%;
+}
+
+#prize-img {
+  box-sizing: border-box;
+
+  height: 75%;
+}
+
+#results {
+  position: relative;
+  margin: 0.2em;
+  margin-left: 40px;
+  /* text-align: center; */
+  height: 5em;
+}
+
+#results table {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #senior-mode-ckb {
