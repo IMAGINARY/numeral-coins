@@ -1,0 +1,2 @@
+#mode-selector{gap:3px;display:flex}#mode-selector img{height:85%}#mode-selector input[type=radio]{visibility:hidden;display:none}label.icon-level.junior input~img{background:#55d7e877}label.icon-level.senior input~img{background:#f18e1e77}label.icon-level input~img{border:3px solid #0000;border-radius:5px}label.icon-level input:checked~img{border:3px solid #00f;border-radius:5px}
+/*# sourceMappingURL=index.021a277a.css.map */
