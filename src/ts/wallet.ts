@@ -377,24 +377,61 @@ class wallet implements wallet {
 
   // Check all
   checkStatus() {
-    if (this.checkGoal()) {
-      this.goalReached();
+    if (!window.seniorMode) {
+      // junior
+      this.checkGoalExceeded() ? this.goalExceeded() : this.goalNotExceeded();
 
-      if (this.checkDecomposed()) {
-        this.decompositionFound();
+      if (this.checkGoalReached()) {
+        this.goalReached();
+
+        if (this.checkDecomposed()) {
+          this.decomposed();
+        }
+      }
+    } else {
+      // senior
+      if (this.checkGoalReached()) {
+        d3.select("#walletValue-img").classed("goal-reached", true);
+        if (this.checkDecomposed()) {
+          this.decomposed();
+        }
+      } else {
+        d3.select("#walletValue-img").classed("goal-reached", false);
       }
     }
   }
 
   // Check if the value in the wallet is the goal price
-  checkGoal() {
+  checkGoalReached() {
     return this.value() === window.price;
   }
+
   goalReached() {
     console.log("Goal reached");
     d3.selectAll(".add-button").classed("disabled", true);
     d3.selectAll(".substract-button").classed("disabled", true);
+    d3.selectAll(".unexplode-button").classed("disabled", true);
     d3.select("#walletValue-img").classed("goal-reached", true);
+  }
+  goalNotReached() {
+    d3.selectAll(".add-button").classed("disabled", false);
+    d3.selectAll(".substract-button").classed("disabled", false);
+    d3.selectAll(".unexplode-button").classed("disabled", false);
+    d3.select("#walletValue-img").classed("goal-reached", false);
+  }
+
+  // Check if the value in the wallet exceeds the goal price
+  checkGoalExceeded() {
+    return this.value() > window.price;
+  }
+  goalExceeded() {
+    console.log("Goal exceeded");
+    d3.selectAll(".add-button").classed("disabled", true);
+    d3.select("#walletValue-img").classed("goal-exceeded", true);
+  }
+  goalNotExceeded() {
+    d3.selectAll(".add-button").classed("disabled", false);
+    d3.select("#walletValue-img").classed("goal-exceeded", false);
   }
 
   // Check if the pockets represent the base-r decomposition
@@ -412,24 +449,28 @@ class wallet implements wallet {
     return this.pockets.toString() === goalValues.toString();
   }
 
-  decompositionFound() {
+  decomposed() {
     console.log("Decomposition found");
 
     let message = `<table>
-      <tr><td>${this.resultMessageValues()}</td></tr>`;
+        <tr><td>${this.resultMessageValues()}</td></tr>`;
 
     if (window.seniorMode) {
       message += `
-        <tr><td>${this.resultMessagePowers()}</td></tr>
-        <tr><td>${this.resultMessageBase()}</td></tr>`;
+          <tr><td>${this.resultMessagePowers()}</td></tr>
+          <tr><td>${this.resultMessageBase()}</td></tr>`;
     }
     message += `</table>`;
 
     if (this.value()) {
       d3.select("#results").html(message);
     }
+
     d3.selectAll(".explode-button").classed("disabled", true);
     d3.selectAll(".unexplode-button").classed("disabled", true);
+    d3.selectAll(".add-button").classed("disabled", true);
+    d3.selectAll(".substract-button").classed("disabled", true);
+    d3.select("#walletValue-img").classed("goal-reached", true);
 
     d3.select("#prize-img").classed("decomposition-found", true);
   }
