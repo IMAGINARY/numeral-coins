@@ -1,6 +1,15 @@
 import * as d3 from "d3-selection";
 import { prizesImgs } from "./prizes";
 import wallet from "./wallet";
+import { levelIcons } from "./img-assets";
+
+interface mode {
+  id: number;
+  type: "junior" | "senior";
+  level: number;
+  icon: string;
+  priceInterval: number[];
+}
 
 function makeWallet() {
   document.getElementById("wallet")?.remove();
@@ -17,7 +26,7 @@ function makeWallet() {
       i += 1
     ) {}
   }
-  console.log(`making wallet with ${i} pockets`);
+  // console.log(`making wallet with ${i} pockets`);
 
   window.W = new wallet(window.radix, i);
 }
@@ -45,6 +54,12 @@ function newChallenge() {
   makeWallet();
 }
 
+function clearResults() {
+  d3.select("#results").text("");
+}
+
+/** Radix */
+
 function changeRadix(b: number) {
   window.radix = b;
   d3.select("#radix-display").text(b.toString());
@@ -52,10 +67,6 @@ function changeRadix(b: number) {
   d3.select("#walletValue-img").classed("goal-reached", false);
   clearResults();
   makeWallet();
-}
-
-function clearResults() {
-  d3.select("#results").text("");
 }
 
 function createRadixMenu(radixOptions: number[]) {
@@ -86,6 +97,146 @@ function createRadixMenu(radixOptions: number[]) {
     .append("li")
     .text((d) => d)
     .on("click", (ev, d) => changeRadix(d));
+}
+
+/** Info menu */
+
+function createInfoMenu() {
+  const infoMenu = d3
+    .select("#config-opts")
+    .append("div")
+    .attr("id", "info-menu")
+    .classed("dropdown", true)
+    .classed("dropdown-left", true);
+
+  infoMenu
+    .append("img")
+    .attr("src", new URL("../img/info.png", import.meta.url).href);
+
+  const infoMenuOptions = [
+    {
+      id: "intro",
+      title: "Introduction",
+      textUrl: new URL("../txt/intro.html", import.meta.url),
+    },
+    {
+      id: "prints",
+      title: "3D prints",
+      textUrl: new URL("../txt/prints.html", import.meta.url),
+    },
+    {
+      id: "about",
+      title: "About",
+      textUrl: new URL("../txt/about.html", import.meta.url),
+    },
+  ];
+
+  infoMenu
+    .append("ul")
+    .selectAll("li")
+    .data(infoMenuOptions)
+    .enter()
+    .append("li")
+    .append((d) => createTextModal(d.id, d.title, d.textUrl));
+}
+
+/** Mode menu */
+
+const modesList = [
+  {
+    id: 1,
+    type: "junior",
+    level: 1,
+    icon: "1",
+    priceInterval: [1, 5],
+  },
+  {
+    id: 2,
+    type: "junior",
+    level: 2,
+    icon: "2",
+    priceInterval: [5, 10],
+  },
+  {
+    id: 3,
+    type: "junior",
+    level: 3,
+    icon: "3",
+    priceInterval: [10, 20],
+  },
+  {
+    id: 4,
+    type: "senior",
+    level: 1,
+    icon: "4",
+    priceInterval: [1, 20],
+  },
+  {
+    id: 5,
+    type: "senior",
+    level: 2,
+    icon: "5",
+    priceInterval: [20, 100],
+  },
+  {
+    id: 6,
+    type: "senior",
+    level: 3,
+    icon: "6",
+    priceInterval: [100, 400],
+  },
+] as mode[];
+
+const modeChanged = (ev: Event, d: mode) => {
+  clearResults();
+  window.currentMode = d;
+  // console.log("mode changed", window.currentMode);
+
+  d3.select("#modeSelectorIcon")
+    .attr("src", levelIcons[`level${d.icon}` as keyof typeof levelIcons])
+    .attr("class", `icon-level ${d.type}`);
+
+  if (window.currentMode.type === "junior") {
+    createRadixMenu([2, 3, 4, 5, 10]);
+    window.seniorMode = false;
+  } else {
+    createRadixMenu([2, 3, 4, 5, 10, 12, 16]);
+    window.seniorMode = true;
+  }
+  newChallenge();
+};
+
+function createModeMenu() {
+  const modeSelector = d3
+    .select("#config-opts")
+    .append("div")
+    .attr("id", "mode-selector")
+    .classed("dropdown", true)
+    .classed("dropdown-left", true);
+
+  modeSelector.append("img").attr("id", "modeSelectorIcon");
+
+  const modeItems = modeSelector
+    .append("ul")
+    .selectAll("li")
+    .data(modesList)
+    .enter()
+    .append("li")
+    .append("label");
+
+  modeItems
+    .append("input")
+    .attr("type", "radio")
+    .attr("name", "modeRadio")
+    .property("checked", (d) => d.id === 1)
+    .on("change", modeChanged);
+
+  modeItems
+    .append("img")
+    .attr("src", (d) => levelIcons[`level${d.icon}` as keyof typeof levelIcons])
+    .attr("class", (d) => `icon-level ${d.type}`);
+
+  modeChanged(null as any as Event, modesList[0]);
 }
 
 /* Text modals */
@@ -174,5 +325,8 @@ export {
   changeRadix,
   clearResults,
   createRadixMenu,
+  createInfoMenu,
+  modesList,
+  createModeMenu,
   createTextModal,
 };

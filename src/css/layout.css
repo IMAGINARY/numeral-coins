@@ -73,9 +73,9 @@ body {
   position: absolute;
   right: 0;
   top: 0;
-  height: 55px;
+  width: 70px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 25px;
   align-items: center;
   margin: 10px;
@@ -83,9 +83,13 @@ body {
 
 #config-opts div {
   height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 #config-opts img {
   height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #radix-display {
