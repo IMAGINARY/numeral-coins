@@ -1,9 +1,9 @@
 {
-  "name": "numeralsystems",
+  "name": "numeralcoins",
   "version": "1.0.0",
   "description": "A playground app on numeral systems",
   "author": "Daniel Ramos",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "d3-fetch": "^3.0.1",
     "d3-selection": "^3.0.0",
