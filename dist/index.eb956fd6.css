@@ -25,6 +25,10 @@
   right: 100%;
 }
 
+#info-menu.dropdown li {
+  padding: 10px;
+}
+
 .dropdown:hover ul {
   opacity: 1;
   display: flex;
@@ -35,7 +39,6 @@
   text-align: center;
   border-radius: 10px;
   margin: 5px;
-  padding: 10px;
   text-decoration: none;
   display: block;
 }

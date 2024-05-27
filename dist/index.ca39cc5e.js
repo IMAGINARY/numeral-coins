@@ -581,127 +581,16 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"4j3ZX":[function(require,module,exports) {
 var _d3Selection = require("d3-selection");
 var _uiFunctions = require("./ui-functions");
-var _imgAssets = require("./img-assets");
 /** GLOBAL VARIABLES */ let maxPrice = 400;
 window.price = 145;
 window.radix = 2;
 window.seniorMode = false;
 window.juniorIndex = 0;
-const modesList = [
-    {
-        id: 1,
-        type: "junior",
-        level: 1,
-        icon: "1",
-        priceInterval: [
-            1,
-            5
-        ]
-    },
-    {
-        id: 2,
-        type: "junior",
-        level: 2,
-        icon: "2",
-        priceInterval: [
-            5,
-            10
-        ]
-    },
-    {
-        id: 3,
-        type: "junior",
-        level: 3,
-        icon: "3",
-        priceInterval: [
-            10,
-            20
-        ]
-    },
-    {
-        id: 4,
-        type: "senior",
-        level: 1,
-        icon: "4",
-        priceInterval: [
-            1,
-            20
-        ]
-    },
-    {
-        id: 5,
-        type: "senior",
-        level: 2,
-        icon: "5",
-        priceInterval: [
-            20,
-            100
-        ]
-    },
-    {
-        id: 6,
-        type: "senior",
-        level: 3,
-        icon: "6",
-        priceInterval: [
-            100,
-            400
-        ]
-    }
-];
-window.currentMode = modesList[0];
-/* MAIN SETUP */ // Create mode selector (radio)
-const modeSelector = _d3Selection.select("#config-opts").append("div").attr("id", "mode-selector");
-const modeItems = modeSelector.selectAll("label").data(modesList).enter().append("label").attr("class", (d)=>`icon-level ${d.type}`);
-modeItems.append("input").attr("type", "radio").attr("name", "modeRadio").property("checked", (d)=>d.id === 1).on("change", (ev, d)=>{
-    (0, _uiFunctions.clearResults)();
-    window.currentMode = d;
-    console.log("mode changed", window.currentMode);
-    if (window.currentMode.type === "junior") {
-        (0, _uiFunctions.createRadixMenu)([
-            2,
-            3,
-            4,
-            5,
-            10
-        ]);
-        window.seniorMode = false;
-    } else {
-        (0, _uiFunctions.createRadixMenu)([
-            2,
-            3,
-            4,
-            5,
-            10,
-            12,
-            16
-        ]);
-        window.seniorMode = true;
-    }
-    (0, _uiFunctions.newChallenge)();
-});
-modeItems.append("img").attr("src", (d)=>(0, _imgAssets.levelIcons)[`level${d.icon}`]).attr("class", (d)=>d.type);
-// Create infoMenu
-const infoMenu = _d3Selection.select("#config-opts").append("div").attr("id", "info-menu").classed("dropdown", true).classed("dropdown-left", true);
-infoMenu.append("img").attr("src", new URL(require("8f5e2f6ff4ff5a29")).href);
-const infoMenuOptions = [
-    {
-        id: "intro",
-        title: "Introduction",
-        textUrl: new URL(require("733d29b46e513ec5"))
-    },
-    {
-        id: "prints",
-        title: "3D prints",
-        textUrl: new URL(require("57811a87b980e150"))
-    },
-    {
-        id: "about",
-        title: "About",
-        textUrl: new URL(require("3b964e2605a88024"))
-    }
-];
-infoMenu.append("ul").selectAll("li").data(infoMenuOptions).enter().append("li").append((d)=>(0, _uiFunctions.createTextModal)(d.id, d.title, d.textUrl));
+window.currentMode = (0, _uiFunctions.modesList)[0];
+/* MAIN SETUP */ // Create infoMenu
+(0, _uiFunctions.createInfoMenu)();
+// Create mode selector (radio)
+(0, _uiFunctions.createModeMenu)();
 // Create radix menu
 const menu = _d3Selection.select("#menu");
 menu.append("div").attr("id", "radix-menu-container");
@@ -731,7 +620,7 @@ _d3Selection.select("#central").append("div").attr("id", "results");
 (0, _uiFunctions.newChallenge)();
 window.d3 = _d3Selection;
 
-},{"d3-selection":"gn9gd","./ui-functions":"8WT3G","./img-assets":"jqODm","8f5e2f6ff4ff5a29":"5XyJl","733d29b46e513ec5":"lBxnv","57811a87b980e150":"82Rge","3b964e2605a88024":"jpTSA","ff1b43c28d621721":"cjPvE","78f4fc830cc21940":"2t12F"}],"gn9gd":[function(require,module,exports) {
+},{"d3-selection":"gn9gd","./ui-functions":"8WT3G","ff1b43c28d621721":"cjPvE","78f4fc830cc21940":"2t12F"}],"gn9gd":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "create", ()=>(0, _createJsDefault.default));
@@ -1929,11 +1818,15 @@ parcelHelpers.export(exports, "newChallenge", ()=>newChallenge);
 parcelHelpers.export(exports, "changeRadix", ()=>changeRadix);
 parcelHelpers.export(exports, "clearResults", ()=>clearResults);
 parcelHelpers.export(exports, "createRadixMenu", ()=>createRadixMenu);
+parcelHelpers.export(exports, "createInfoMenu", ()=>createInfoMenu);
+parcelHelpers.export(exports, "modesList", ()=>modesList);
+parcelHelpers.export(exports, "createModeMenu", ()=>createModeMenu);
 parcelHelpers.export(exports, "createTextModal", ()=>createTextModal);
 var _d3Selection = require("d3-selection");
 var _prizes = require("./prizes");
 var _wallet = require("./wallet");
 var _walletDefault = parcelHelpers.interopDefault(_wallet);
+var _imgAssets = require("./img-assets");
 function makeWallet() {
     document.getElementById("wallet")?.remove();
     // calculate number of pockets
@@ -1943,7 +1836,7 @@ function makeWallet() {
     } else {
         for(i = 0; window.radix ** i - 1 < window.currentMode.priceInterval[1]; i += 1);
     }
-    console.log(`making wallet with ${i} pockets`);
+    // console.log(`making wallet with ${i} pockets`);
     window.W = new (0, _walletDefault.default)(window.radix, i);
 }
 function newChallenge() {
@@ -1957,7 +1850,10 @@ function newChallenge() {
     _d3Selection.select("#price").text(window.price.toString());
     makeWallet();
 }
-function changeRadix(b) {
+function clearResults() {
+    _d3Selection.select("#results").text("");
+}
+/** Radix */ function changeRadix(b) {
     window.radix = b;
     _d3Selection.select("#radix-display").text(b.toString());
     _d3Selection.select("#prize-img").classed("decomposition-found", false);
@@ -1965,15 +1861,132 @@ function changeRadix(b) {
     clearResults();
     makeWallet();
 }
-function clearResults() {
-    _d3Selection.select("#results").text("");
-}
 function createRadixMenu(radixOptions) {
     document.getElementById("radix-menu")?.remove();
     const radixMenu = _d3Selection.select("#radix-menu-container").append("div").attr("id", "radix-menu").classed("dropdown", true).classed("dropdown-right", true);
     radixMenu.append("img").attr("src", new URL(require("f9d0b14c59a54e67")).href);
     radixMenu.append("span").attr("id", "radix-display").classed("radix-text", true).text(window.radix);
     radixMenu.append("ul").selectAll("li").data(radixOptions).enter().append("li").text((d)=>d).on("click", (ev, d)=>changeRadix(d));
+}
+/** Info menu */ function createInfoMenu() {
+    const infoMenu = _d3Selection.select("#config-opts").append("div").attr("id", "info-menu").classed("dropdown", true).classed("dropdown-left", true);
+    infoMenu.append("img").attr("src", new URL(require("5dc83d12855b8e73")).href);
+    const infoMenuOptions = [
+        {
+            id: "intro",
+            title: "Introduction",
+            textUrl: new URL(require("5d2a510178a480d5"))
+        },
+        {
+            id: "prints",
+            title: "3D prints",
+            textUrl: new URL(require("b73b373b2d87f5f4"))
+        },
+        {
+            id: "about",
+            title: "About",
+            textUrl: new URL(require("43aa8f3995c5f10e"))
+        }
+    ];
+    infoMenu.append("ul").selectAll("li").data(infoMenuOptions).enter().append("li").append((d)=>createTextModal(d.id, d.title, d.textUrl));
+}
+/** Mode menu */ const modesList = [
+    {
+        id: 1,
+        type: "junior",
+        level: 1,
+        icon: "1",
+        priceInterval: [
+            1,
+            5
+        ]
+    },
+    {
+        id: 2,
+        type: "junior",
+        level: 2,
+        icon: "2",
+        priceInterval: [
+            5,
+            10
+        ]
+    },
+    {
+        id: 3,
+        type: "junior",
+        level: 3,
+        icon: "3",
+        priceInterval: [
+            10,
+            20
+        ]
+    },
+    {
+        id: 4,
+        type: "senior",
+        level: 1,
+        icon: "4",
+        priceInterval: [
+            1,
+            20
+        ]
+    },
+    {
+        id: 5,
+        type: "senior",
+        level: 2,
+        icon: "5",
+        priceInterval: [
+            20,
+            100
+        ]
+    },
+    {
+        id: 6,
+        type: "senior",
+        level: 3,
+        icon: "6",
+        priceInterval: [
+            100,
+            400
+        ]
+    }
+];
+const modeChanged = (ev, d)=>{
+    clearResults();
+    window.currentMode = d;
+    // console.log("mode changed", window.currentMode);
+    _d3Selection.select("#modeSelectorIcon").attr("src", (0, _imgAssets.levelIcons)[`level${d.icon}`]).attr("class", `icon-level ${d.type}`);
+    if (window.currentMode.type === "junior") {
+        createRadixMenu([
+            2,
+            3,
+            4,
+            5,
+            10
+        ]);
+        window.seniorMode = false;
+    } else {
+        createRadixMenu([
+            2,
+            3,
+            4,
+            5,
+            10,
+            12,
+            16
+        ]);
+        window.seniorMode = true;
+    }
+    newChallenge();
+};
+function createModeMenu() {
+    const modeSelector = _d3Selection.select("#config-opts").append("div").attr("id", "mode-selector").classed("dropdown", true).classed("dropdown-left", true);
+    modeSelector.append("img").attr("id", "modeSelectorIcon");
+    const modeItems = modeSelector.append("ul").selectAll("li").data(modesList).enter().append("li").append("label");
+    modeItems.append("input").attr("type", "radio").attr("name", "modeRadio").property("checked", (d)=>d.id === 1).on("change", modeChanged);
+    modeItems.append("img").attr("src", (d)=>(0, _imgAssets.levelIcons)[`level${d.icon}`]).attr("class", (d)=>`icon-level ${d.type}`);
+    modeChanged(null, modesList[0]);
 }
 /* Text modals */ function createTextModal(id, titleKey, textUrl) {
     // Creates a modal (HTMLDivElement) and a button that activates the modal.
@@ -2017,7 +2030,7 @@ function createRadixMenu(radixOptions) {
     return container;
 }
 
-},{"d3-selection":"gn9gd","./prizes":"4TKh0","./wallet":"kh34X","f9d0b14c59a54e67":"gNWkO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4TKh0":[function(require,module,exports) {
+},{"d3-selection":"gn9gd","./prizes":"4TKh0","./wallet":"kh34X","./img-assets":"jqODm","f9d0b14c59a54e67":"gNWkO","5dc83d12855b8e73":"5XyJl","5d2a510178a480d5":"lBxnv","b73b373b2d87f5f4":"82Rge","43aa8f3995c5f10e":"jpTSA","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4TKh0":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "prizesImgs", ()=>prizesImgs);
@@ -4418,10 +4431,7 @@ module.exports = require("1468b79ca4878382").getBundleURL("1e3qO") + "right.99fb
 },{"1468b79ca4878382":"lgJ39"}],"9Ha6M":[function(require,module,exports) {
 module.exports = require("445289083160dda1").getBundleURL("1e3qO") + "coin.4c902f33.svg" + "?" + Date.now();
 
-},{"445289083160dda1":"lgJ39"}],"gNWkO":[function(require,module,exports) {
-module.exports = require("8ce815bc539c10da").getBundleURL("1e3qO") + "star.f0695dfc.png" + "?" + Date.now();
-
-},{"8ce815bc539c10da":"lgJ39"}],"jqODm":[function(require,module,exports) {
+},{"445289083160dda1":"lgJ39"}],"jqODm":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "levelIcons", ()=>levelIcons);
@@ -4452,7 +4462,10 @@ module.exports = require("18f06218c0e16bd3").getBundleURL("1e3qO") + "coin-level
 },{"18f06218c0e16bd3":"lgJ39"}],"7j2zI":[function(require,module,exports) {
 module.exports = require("2c3d68609c5e3e2").getBundleURL("1e3qO") + "coin-level-6.c64d15ee.png" + "?" + Date.now();
 
-},{"2c3d68609c5e3e2":"lgJ39"}],"5XyJl":[function(require,module,exports) {
+},{"2c3d68609c5e3e2":"lgJ39"}],"gNWkO":[function(require,module,exports) {
+module.exports = require("8ce815bc539c10da").getBundleURL("1e3qO") + "star.f0695dfc.png" + "?" + Date.now();
+
+},{"8ce815bc539c10da":"lgJ39"}],"5XyJl":[function(require,module,exports) {
 module.exports = require("1b7c624da646e4c6").getBundleURL("1e3qO") + "info.13c9746c.png" + "?" + Date.now();
 
 },{"1b7c624da646e4c6":"lgJ39"}],"lBxnv":[function(require,module,exports) {

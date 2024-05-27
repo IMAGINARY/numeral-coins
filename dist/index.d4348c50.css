@@ -3,8 +3,8 @@
   display: flex;
 }
 
-#mode-selector img {
-  height: 85%;
+#mode-selector ul img {
+  width: 70px;
 }
 
 #mode-selector input[type="radio"] {
@@ -12,20 +12,20 @@
   display: none;
 }
 
-label.icon-level.junior input ~ img {
+img.icon-level.junior {
   background: #55d7e877;
 }
 
-label.icon-level.senior input ~ img {
+img.icon-level.senior {
   background: #f18e1e77;
 }
 
-label.icon-level input ~ img {
+img.icon-level {
   border: 3px solid #0000;
   border-radius: 5px;
 }
 
-label.icon-level input:checked ~ img {
+input:checked ~ img.icon-level {
   border: 3px solid #00f;
   border-radius: 5px;
 }
